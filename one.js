@@ -1,19 +1,23 @@
-import { run } from './helpers.js';
+import { getLines } from './helpers.js';
 
 const URL = './inputs/one.txt';
 
-export async function dayOne() {
+function processData(lines) {
   const elves = [[]];
-
-  const processLine = (line) => {
+  for (const line of lines) {
     if (line === '') {
-        elves.push([]);
+      elves.push([]);
     } else {
         elves[elves.length - 1].push(line);
     }
   }
+  return elves;
+}
 
-  await run(processLine, URL);
+export async function dayOne() {
+  const lines = await getLines(URL);
+
+  const elves = processData(lines);
 
   const counts = elves.map(elf => elf.reduce((acc, cur) => acc + Number(cur), 0));
 
