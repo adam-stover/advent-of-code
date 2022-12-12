@@ -15,6 +15,8 @@ export async function dayOne() {
 
   await run(processLine, URL);
 
+  const counts = elves.map(elf => elf.reduce((acc, cur) => acc + Number(cur), 0));
+
   const topThree = counts.reduce((acc, cur) => {
     const [first, second, third] = acc;
     if (cur > first) {
@@ -26,6 +28,7 @@ export async function dayOne() {
     if (cur > third) {
         return [first, second, cur];
     }
+    return acc;
   }, [0, 0, 0]);
 
   console.log(topThree[0]);
