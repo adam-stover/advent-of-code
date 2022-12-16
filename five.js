@@ -22,9 +22,18 @@ export default async function dayFive() {
     const [_, count, __, originIndex, ___, destinationIndex] = instructions[i].split(' ').map(Number);
     const origin = stacks[originIndex - 1];
     const destination = stacks[destinationIndex - 1];
+    const tempStack = [];
+
+    // for (let j = 0; j < count; ++j) {
+    //   destination.push(origin.pop());
+    // }
 
     for (let j = 0; j < count; ++j) {
-      destination.push(origin.pop());
+      tempStack.push(origin.pop());
+    }
+
+    while (tempStack.length) {
+      destination.push(tempStack.pop());
     }
   }
 
