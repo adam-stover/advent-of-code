@@ -1,8 +1,9 @@
-import one from './one.js';
-import two from './two.js';
-import three from './three.js';
+import dayOne from './one.js';
+import dayTwo from './two.js';
+import dayThree from './three.js';
+import dayFour from './four.js';
 
-// one();
-// two();
-three();
-
+// dayOne();
+// dayTwo();
+// dayThree();
+dayFour();
