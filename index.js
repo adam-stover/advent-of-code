@@ -4,10 +4,12 @@ import dayThree from './three.js';
 import dayFour from './four.js';
 import dayFive from './five.js';
 import daySix from './six.js';
+import daySeven from './seven.js';
 
 // dayOne();
 // dayTwo();
 // dayThree();
 // dayFour();
 // dayFive();
-daySix();
+// daySix();
+daySeven();
