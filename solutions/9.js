@@ -4,30 +4,6 @@ const URL = './inputs/9.txt';
 
 const has = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop);
 
-const getAxisDir = (dirChar) => {
-  if (dirChar === 'L') return [0, 0];
-  if (dirChar === 'R') return [0, 1];
-  if (dirChar === 'U') return [1, 1];
-  if (dirChar === 'D') return [1, 0];
-}
-
-const getGridSize = (movements) => {
-  const pos = [0, 0];
-  const maxes = [[0, 0], [0, 0]];
-
-  for (let i = 0; i < movements.length; ++i) {
-    const [dirChar, count] = movements[i].split(' ');
-    const [axis, dir] = getAxisDir(dirChar);
-
-    pos[axis] += count * (dir ? 1 : -1);
-    if (dir) {
-      if (pos[axis] > maxes[axis][dir]) maxes[axis][dir] = pos[axis];
-    } else if (pos[axis] < maxes[axis][dir]) maxes[axis][dir] = pos[axis];
-  }
-
-  return [maxes[0][1] - maxes[0][0], maxes[1][1] - maxes[1][0]];
-}
-
 const isAdjacent = (posHead, posTail) => {
   if (
     Math.abs(posHead[0] - posTail[0]) <= 1
