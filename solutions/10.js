@@ -68,56 +68,20 @@ class Thing {
   }
 }
 
-// const getXAtCycle = (targetCycle, instructions) => {
-//   let x = 1;
-//   let cycle = 1;
-//   let currentInstructionIndex = 0;
-//   let midInstruction = false;
-
-//   while (cycle < targetCycle) {
-//     // console.log(cycle);
-//     cycle++;
-//     const [op, val] = instructions[currentInstructionIndex].split(' ');
-
-//     if (op === 'addx') {
-//       if (!midInstruction) {
-//         midInstruction = true;
-//       } else {
-//         x += Number(val);
-//         midInstruction = false;
-//         currentInstructionIndex++;
-//       }
-//     } else {
-//       currentInstructionIndex++;
-//     }
-//   }
-
-//   return x;
-// }
-
-// const getSignalStrengthAtCycle = (cycle, instructions) => {
-//   return cycle * getXAtCycle(cycle, instructions);
-// }
-
 export default async function dayTen() {
   const instructions = await getLines(URL);
 
   const thing = new Thing(instructions);
-
   // const interestingCycles = [20, 60, 100, 140, 180, 220];
+
+  // let sum = 0;
 
   // while (thing.cycle <= 220) {
   //   thing.step();
-  //   if (interestingCycles.includes(thing.cycle)) console.log(thing.signalStrength());
+  //   if (interestingCycles.includes(thing.cycle)) sum += thing.signalStrength();
   // }
 
-  // interestingCycles.forEach(cycle => {
-  //   console.log(getSignalStrengthAtCycle(cycle, instructions));
-  // })
-
-  // const signalSum = interestingCycles.reduce((acc, cur) => acc + getSignalStrengthAtCycle(cur, instructions), 0);
-
-  // console.log(signalSum)
+  // console.log(sum);
 
   while (!thing.isDone()) {
     thing.step();
