@@ -1,6 +1,6 @@
-import { getLines } from './helpers.js';
+import { getLines } from '../helpers.js';
 
-const URL = './inputs/seven.txt';
+const URL = './inputs/7.txt';
 
 class Directory {
   constructor(parent = null) {

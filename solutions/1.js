@@ -1,6 +1,6 @@
-import { getLines } from './helpers.js';
+import { getLines } from '../helpers.js';
 
-const URL = './inputs/one.txt';
+const URL = './inputs/1.txt';
 
 function processData(lines) {
   const elves = [[]];

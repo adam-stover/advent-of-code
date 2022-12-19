@@ -1,6 +1,6 @@
-import { getLines } from './helpers.js';
+import { getLines } from '../helpers.js';
 
-const URL = './inputs/four.txt';
+const URL = './inputs/4.txt';
 
 export default async function dayFour() {
   const assignments = await getLines(URL);

@@ -1,6 +1,6 @@
-import { getLines } from './helpers.js';
+import { getLines } from '../helpers.js';
 
-const URL = './inputs/three.txt';
+const URL = './inputs/3.txt';
 
 const getPriority = (item) => {
   const charCode = item.charCodeAt(0);

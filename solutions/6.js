@@ -1,6 +1,6 @@
-import { getLines } from './helpers.js';
+import { getLines } from '../helpers.js';
 
-const URL = './inputs/six.txt';
+const URL = './inputs/6.txt';
 
 export default async function daySix() {
   const signal = (await getLines(URL))[0];

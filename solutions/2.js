@@ -1,6 +1,6 @@
-import { getLines } from './helpers.js';
+import { getLines } from '../helpers.js';
 
-const URL = './inputs/two.txt';
+const URL = './inputs/2.txt';
 
 function processData(lines) {
   const rounds = [];

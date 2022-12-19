@@ -1,10 +1,12 @@
-import dayOne from './one.js';
-import dayTwo from './two.js';
-import dayThree from './three.js';
-import dayFour from './four.js';
-import dayFive from './five.js';
-import daySix from './six.js';
-import daySeven from './seven.js';
+import dayOne from './solutions/1.js';
+import dayTwo from './solutions/2.js';
+import dayThree from './solutions/3.js';
+import dayFour from './solutions/4.js';
+import dayFive from './solutions/5.js';
+import daySix from './solutions/6.js';
+import daySeven from './solutions/7.js';
+import dayEight from './solutions/8.js';
+import dayNine from './solutions/9.js';
 
 // dayOne();
 // dayTwo();
@@ -12,4 +14,6 @@ import daySeven from './seven.js';
 // dayFour();
 // dayFive();
 // daySix();
-daySeven();
+// daySeven();
+// dayEight();
+dayNine();
