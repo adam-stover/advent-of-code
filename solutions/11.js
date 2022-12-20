@@ -1,4 +1,4 @@
-import { getLines } from '../helpers.js';
+import { getLines, ints } from '../utils.js';
 
 const URL = './inputs/11.txt';
 
@@ -19,9 +19,9 @@ const getOpFn = (opLine) => {
 }
 
 const getTestFn = (testLine, trueLine, falseLine) => {
-  const divisibleBy = Number(testLine.split('divisible by ')[1]);
-  const ifTrue = Number(trueLine.split('monkey ')[1]);
-  const ifFalse = Number(falseLine.split('monkey ')[1]);
+  const divisibleBy = ints(testLine)[0];
+  const ifTrue = ints(trueLine)[0];
+  const ifFalse = ints(falseLine)[0];
   return (num) => (num % divisibleBy) === 0 ? ifTrue : ifFalse;
 }
 
@@ -29,8 +29,8 @@ class Monkey {
   constructor(input, lcm) {
     const [nameLine, itemLine, opLine, testLine, trueLine, falseLine] = input;
     this.lcm = lcm;
-    this.id = Number(nameLine.slice(-2)[0]);
-    this.items = itemLine.split(': ')[1].split(', ').map(Number);
+    this.id = ints(nameLine)[0];
+    this.items = ints(itemLine);
     this.op = getOpFn(opLine);
     this.test = getTestFn(testLine, trueLine, falseLine);
 
