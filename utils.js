@@ -21,3 +21,11 @@ export function cloneMatrix(matrix) {
   }
   return newMatrix;
 }
+
+export function filterMap(arr, filterFn, mapFn) {
+  const res = [];
+  for (let i = 0; i < arr.length; ++i) {
+    if (filterFn(arr[i])) res.push(mapFn(arr[i]));
+  }
+  return res;
+}
