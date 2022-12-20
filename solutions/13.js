@@ -1,4 +1,4 @@
-import { getLines, filterMap } from "../utils.js";
+import { getLines, filterMap } from '../utils.js';
 
 const URL = './inputs/13.txt';
 

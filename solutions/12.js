@@ -1,4 +1,4 @@
-import { cloneMatrix, getLines } from "../utils.js";
+import { cloneMatrix, getLines } from '../utils.js';
 
 const URL = './inputs/12.txt';
 
