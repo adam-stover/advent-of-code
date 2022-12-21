@@ -8,7 +8,7 @@ function processData(lines) {
     if (line === '') {
       elves.push([]);
     } else {
-        elves[elves.length - 1].push(line);
+      elves[elves.length - 1].push(line);
     }
   }
   return elves;

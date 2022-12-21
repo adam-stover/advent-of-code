@@ -29,3 +29,20 @@ export function filterMap(arr, filterFn, mapFn) {
   }
   return res;
 }
+
+export function rangeUnion(ranges) {
+  const sorted = cloneMatrix(ranges).sort((a, b) => a[0] - b[0]);
+  const union = [];
+
+  for (const [start, end] of sorted) {
+    if (union.length && union[union.length - 1][1] >= start - 1) {
+      if (union[union.length - 1][1] < end) {
+        union[union.length - 1] = [union[union.length - 1][0], end];
+      }
+    } else {
+      union.push([start, end]);
+    }
+  }
+
+  return union;
+}
