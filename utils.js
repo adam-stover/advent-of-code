@@ -36,6 +36,7 @@ export function rangeUnion(ranges) {
 
   for (const [start, end] of sorted) {
     if (union.length && union[union.length - 1][1] >= start - 1) {
+      // following if is to avoid entirely contained ranges
       if (union[union.length - 1][1] < end) {
         union[union.length - 1] = [union[union.length - 1][0], end];
       }

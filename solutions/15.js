@@ -35,8 +35,6 @@ const countBeaconRow = (sensors, y) => {
 
 const getBeacon = (sensors, min, max) => {
   for (let y = min; y <= max; ++y) {
-    console.log(`trying row ${y}`);
-
     const ranges = [];
 
     for (const sensor of sensors) {
