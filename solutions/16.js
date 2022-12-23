@@ -252,9 +252,7 @@ const getMostFlowGreedy = (valve, timeRemaining) => {
   return pressure + getMostFlowGreedy(bestValve, timeRemaining - 1);
 }
 
-const getSingleAnswer = (valves, time, current) => {
-  if (!valves.length || time <= 1) return 0;
-
+const getSingleAnswerHelper = (valves, time, current) => {
   const options = [];
 
   const distances = valves.map(valve => getDistance(current, valve));
@@ -270,13 +268,41 @@ const getSingleAnswer = (valves, time, current) => {
   return options.length ? options.reduce((acc, cur) => acc > cur ? acc : cur, 0) : 0;
 }
 
-const getAnswer = (valves, aTime, bTime, aCurrent, bCurrent = aCurrent) => {
-  if (!valves.length) return 0;
+const getSingleAnswer = (() => {
+  const cache = {};
 
-  if (aTime <= 1) return getSingleAnswer(valves, bTime, bCurrent);
+  return (valves, time, current) => {
+    if (!valves.length || time <= 1) return 0;
 
-  if (bTime <= 1) return getSingleAnswer(valves, aTime, aCurrent);
+    const key = `${valves.join('')}-${time}-${current}`;
 
+    if (!has(cache, key)) cache[key] = getSingleAnswerHelper(valves, time, current);
+
+    return cache[key];
+  }
+})();
+
+const getDeepFlow = (valves, aNewValve, bNewValve, aNewTime, bNewTime) => {
+  const aFlow = aNewTime * aNewValve.flow;
+  const bFlow = bNewTime > 0 ? bNewTime * bNewValve.flow : 0;
+  const deepFlow = bFlow > 0
+    ? getAnswer(
+      valves.filter(v => v !== aNewValve && v !== bNewValve),
+      aNewTime,
+      bNewTime,
+      aNewValve,
+      bNewValve,
+      )
+    : getSingleAnswer(
+      valves.filter(v => v !== aNewValve),
+      aNewTime,
+      aNewValve,
+    );
+
+  return aFlow + bFlow + deepFlow;
+}
+
+const getAnswerHelper = (valves, aTime, bTime, aCurrent, bCurrent = aCurrent) => {
   const options = [];
 
   if (aCurrent === bCurrent) {
@@ -284,62 +310,83 @@ const getAnswer = (valves, aTime, bTime, aCurrent, bCurrent = aCurrent) => {
     for (let i = 0; i < distances.length - 1; ++i) {
       const aNewTime = aTime - (distances[i] + 1);
       const aHasTime = aNewTime > 0;
-      const aFlow = aHasTime ? aNewTime * valves[i].flow : 0;
-      for (let j = i + 1; j < distances.length; ++j) {
-        const bNewTime = bTime - (distances[j] + 1);
-        const bHasTime = bNewTime > 0;
-        const bFlow = bHasTime ? bNewTime * valves[j].flow : 0;
-
-        const combinedFlow = aFlow + bFlow;
-
-        const deepFlow = getAnswer(
-          valves.filter(v => v !== valves[i] && v !== valves[j]),
-          aNewTime,
-          bNewTime,
-          valves[i],
-          valves[j]
-        );
-
-        const totalFlow = combinedFlow + deepFlow;
-        options.push(totalFlow);
+      if (aHasTime) {
+        for (let j = i + 1; j < distances.length; ++j) {
+          const bNewTime = bTime - (distances[j] + 1);
+          options.push(getDeepFlow(valves, valves[i], valves[j], aNewTime, bNewTime));
+        }
       }
     }
-  } else {
-    const aDistances = filterMap(valves, v => v !== bCurrent, v => [v, getDistance(aCurrent, v)]);
-    const bDistances = filterMap(valves, v => v !== aCurrent, v => [v, getDistance(bCurrent, v)]);
 
-    for (let i = 0; i < aDistances.length; ++i) {
-      const aNewValve = aDistances[i][0];
-      const aNewTime = aTime - (aDistances[i][1] + 1);
+    return options.reduce((acc, cur) => acc > cur ? acc : cur, 0);
+  }
+
+  const aValves = [];
+  const bValves = [];
+  const distances = [];
+
+  for (const valve of valves) {
+    const aDistance = getDistance(aCurrent, valve);
+    const bDistance = getDistance(bCurrent, valve);
+
+    if (aDistance < bDistance) aValves.push([valve, aDistance]);
+    else bValves.push([valve, bDistance]);
+    distances.push([valve, aDistance, bDistance]);
+  }
+
+  if (aValves.length === 0 || bValves.length === 0) {
+    for (let i = 0; i < distances.length - 1; ++i) {
+      const aNewValve = distances[i][0];
+      const aNewTime = aTime - (distances[i][1] + 1);
       const aHasTime = aNewTime > 0;
-      const aFlow = aHasTime ? aNewTime * aNewValve.flow : 0;
 
-      for (let j = 0; j < bDistances.length; ++j) {
-        const bNewValve = bDistances[j][0];
-        if (bNewValve !== aNewValve) {
-          const bNewTime = bTime - (bDistances[j][1] + 1);
-          const bHasTime = bNewTime > 0;
-          const bFlow = bHasTime ? bNewTime * bNewValve.flow : 0;
+      if (aHasTime) {
+        // is following a bug or just a free optimization? it still works o.o
+        for (let j = i + 1; j < distances.length; ++j) {
+          const bNewValve = distances[j][0];
+          const bNewTime = bTime - (distances[j][2] + 1);
 
-          const combinedFlow = aFlow + bFlow;
-
-          const deepFlow = getAnswer(
-            valves.filter(v => v !== aNewValve && v !== bNewValve),
-            aNewTime,
-            bNewTime,
-            aNewValve,
-            bNewValve,
-          );
-
-          const totalFlow = combinedFlow + deepFlow;
-          options.push(totalFlow);
+          options.push(getDeepFlow(valves, aNewValve, bNewValve, aNewTime, bNewTime))
         }
+      }
+    }
+
+    return options.reduce((acc, cur) => acc > cur ? acc : cur, 0);
+  }
+
+  for (let i = 0; i < aValves.length; ++i) {
+    const aNewValve = aValves[i][0];
+    const aNewTime = aTime - (aValves[i][1] + 1);
+    const aHasTime = aNewTime > 0;
+
+    if (aHasTime) {
+      for (let j = 0; j < bValves.length; ++j) {
+        const bNewValve = bValves[j][0];
+        const bNewTime = bTime - (bValves[j][1] + 1);
+
+        options.push(getDeepFlow(valves, aNewValve, bNewValve, aNewTime, bNewTime));
       }
     }
   }
 
   return options.reduce((acc, cur) => acc > cur ? acc : cur, 0);
 }
+
+const getAnswer = (() => {
+  const cache = {};
+
+  return (valves, aTime, bTime, aCurrent, bCurrent = aCurrent) => {
+    if (!valves.length) return 0;
+    if (aTime <= 1) return getSingleAnswer(valves, bTime, bCurrent);
+    if (bTime <= 1) return getSingleAnswer(valves, aTime, aCurrent);
+
+    const key = `${valves.join('')}-${aTime}-${bTime}-${aCurrent}-${bCurrent}`;
+
+    if (!has(cache, key)) cache[key] = getAnswerHelper(valves, aTime, bTime, aCurrent, bCurrent);
+
+    return cache[key];
+  }
+})();
 
 export default async function daySixteen() {
   const lines = await getLines(URL);
@@ -352,7 +399,10 @@ export default async function daySixteen() {
 
   // console.log(pressure);
 
+  const start = process.hrtime();
   const answer = getAnswer(valves.filter(valve => valve.flow), 26, 26, valveMap['AA']);
+  const end = process.hrtime();
+  console.log(end[0] - start[0]);
 
   console.log(answer);
 }
