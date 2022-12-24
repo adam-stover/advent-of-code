@@ -1,8 +1,8 @@
 import { getLines, has } from '../utils.js';
 
+const URL = './inputs/17.txt';
 const ROCK = '#';
 const AIR = '.';
-const URL = './inputs/17.txt';
 const TARGET = 1000000000000;
 const WIDTH = 7;
 const SHAPES = [
