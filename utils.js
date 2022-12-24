@@ -13,11 +13,8 @@ export function ints(str) {
 export function cloneMatrix(matrix) {
   const newMatrix = [];
   for (let i = 0; i < matrix.length; ++i) {
-    const row = [];
-    for (let j = 0; j < matrix[i].length; ++j) {
-      row[j] = matrix[i][j];
-    }
-    newMatrix.push(row);
+    if (Array.isArray(matrix[i])) newMatrix[i] = cloneMatrix(matrix[i]);
+    else newMatrix[i] = matrix[i];
   }
   return newMatrix;
 }
@@ -50,4 +47,34 @@ export function rangeUnion(ranges) {
 
 export function has(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+export function max(arr, cb) {
+  return arr.reduce((acc, cur) => {
+    const val = cb(cur);
+    return acc > val ? acc : cur;
+  }, -Infinity);
+}
+
+export function min(arr, cb) {
+  return arr.reduce((acc, cur) => {
+    const val = cb(cur);
+    return acc < val ? acc : cur;
+  }, Infinity);
+}
+
+export function minmax(arr, cb) {
+  if (!arr.length) throw new Error('arr is empty noob');
+
+  const first = cb(arr[0]);
+  let min = first;
+  let max = first;
+
+  for (let i = 1; i < arr.length; ++i) {
+    const val = cb(arr[i]);
+    if (val < min) min = val;
+    else if (val > max) max = val;
+  }
+
+  return [min, max];
 }
