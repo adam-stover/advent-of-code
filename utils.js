@@ -47,3 +47,7 @@ export function rangeUnion(ranges) {
 
   return union;
 }
+
+export function has(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
