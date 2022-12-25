@@ -19,6 +19,16 @@ export function cloneMatrix(matrix) {
   return newMatrix;
 }
 
+export function cloneObj(obj) {
+  const newObj = {}
+
+  for (const key of Object.keys(obj)) {
+    newObj[key] = obj[key];
+  }
+
+  return newObj;
+}
+
 export function filterMap(arr, filterFn, mapFn) {
   const res = [];
   for (let i = 0; i < arr.length; ++i) {
@@ -50,28 +60,34 @@ export function has(obj, prop) {
 }
 
 export function max(arr, cb) {
+  const transform = cb ? cb : x => x;
   return arr.reduce((acc, cur) => {
-    const val = cb(cur);
-    return acc > val ? acc : cur;
+    const val = transform(cur);
+    const accVal = transform(acc);
+    return accVal > val ? acc : cur;
   }, -Infinity);
 }
 
 export function min(arr, cb) {
+  const transform = cb ? cb : x => x;
   return arr.reduce((acc, cur) => {
-    const val = cb(cur);
-    return acc < val ? acc : cur;
+    const val = transform(cur);
+    const accVal = transform(acc);
+    return accVal > val ? acc : cur;
   }, Infinity);
 }
 
 export function minmax(arr, cb) {
   if (!arr.length) throw new Error('arr is empty noob');
 
-  const first = cb(arr[0]);
+  const transform = cb ? cb : x => x;
+
+  const first = transform(arr[0]);
   let min = first;
   let max = first;
 
   for (let i = 1; i < arr.length; ++i) {
-    const val = cb(arr[i]);
+    const val = transform(arr[i]);
     if (val < min) min = val;
     else if (val > max) max = val;
   }
