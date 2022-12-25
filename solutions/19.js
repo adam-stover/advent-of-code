@@ -1,7 +1,7 @@
 import { cloneObj, getLines, ints, max } from '../utils.js';
 
-const URL = './inputs/19.txt';
-const TIME = 24;
+const URL = './inputs/test.txt';
+const TIME = 32;
 
 const ORE = 0;
 const CLAY = 1;
@@ -302,6 +302,37 @@ class BlueprintEvaluator {
     // return [geodes, [...history, ...subhistory]];
   }
 
+  projectedGeodesHelper(robots, resources, time) {
+    if (time <= 0) return [resources[GEODE], []];
+    if (time === 1) return [resources[GEODE] + robots[GEODE], []];
+    if (time === 2) {
+      // const history = [];
+      let geodes = resources[GEODE] + 2 * robots[GEODE];
+      if (this._canMake(GEODE, resources)) {
+        geodes++;
+        // history.push(`building geode at minute ${1 + TIME - time}`);
+      }
+      return geodes;
+      // return [geodes, history];
+    }
+
+    let buildGeode = false;
+
+    if (this._canMake(GEODE, resources)) {
+      buildGeode = true;
+      // history.push(`building geode at minute ${1 + TIME - time}`);
+      resources[ORE] -= this.costs[GEODE][ORE];
+      resources[OBS] -= this.costs[GEODE][OBS];
+    }
+
+    resources[GEODE] += robots[GEODE];
+    resources[OBS] += robots[OBS];
+    resources[CLAY] += robots[CLAY];
+    resources[ORE] += robots[ORE];
+    if (buildGeode) robots[GEODE]++;
+    return this.projectedGeodesWithBuildingAll(cloneObj(robots), cloneObj(resources), time - 1);
+  }
+
   projectedGeodesWithBuildingAll(robots, resources, time) {
     if (time <= 0) return [resources[GEODE], []];
     if (time === 1) return [resources[GEODE] + robots[GEODE], []];
@@ -316,10 +347,11 @@ class BlueprintEvaluator {
       // return [geodes, history];
     }
 
-    const justGeodes = this.projectedGeodesWithBuildingOnlyGeodes(cloneObj(robots), cloneObj(resources), time);
+    // const justGeodes = this.projectedGeodesWithBuildingOnlyGeodes(cloneObj(robots), cloneObj(resources), time);
+    const justGeodes = this.projectedGeodesHelper(cloneObj(robots), cloneObj(resources), time);
     const geodesAndObs = this.projectedGeodesWithBuildingGeodesAndObs(cloneObj(robots), cloneObj(resources), time);
-    const withOre = this.projectedGeodesWithBuildingOre(cloneObj(robots), cloneObj(resources), time);
-    const withClay = this.projectedGeodesWithBuildingClay(cloneObj(robots), cloneObj(resources), time);
+    const withOre = this._canMake(ORE, resources) ? this.projectedGeodesWithBuildingOre(cloneObj(robots), cloneObj(resources), time) : 0;
+    const withClay = this._canMake(CLAY, resources) ? this.projectedGeodesWithBuildingClay(cloneObj(robots), cloneObj(resources), time) : 0;
 
     return max([justGeodes, geodesAndObs, withOre, withClay]);
   }
