@@ -12,6 +12,7 @@ import dayNineteen from './solutions/19.js';
 import dayTwo from './solutions/2.js';
 import dayTwenty from './solutions/20.js';
 import dayTwentyOne from './solutions/21.js';
+import dayTwentyTwo from './solutions/22.js';
 import dayTwentyFive from './solutions/25.js';
 import dayThree from './solutions/3.js';
 import dayFour from './solutions/4.js';
@@ -41,6 +42,7 @@ import dayNine from './solutions/9.js';
 // dayEighteen();
 // dayNineteen();
 // dayTwenty();
-dayTwentyOne();
+// dayTwentyOne();
+dayTwentyTwo();
 
 // dayTwentyFive();

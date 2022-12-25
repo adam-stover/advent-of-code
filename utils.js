@@ -94,3 +94,11 @@ export function minmax(arr, cb) {
 
   return [min, max];
 }
+
+export function findLastIndex(arr, cb) {
+  for (let i = arr.length - 1; i >= 0; --i) {
+    if (cb(arr[i])) return i;
+  }
+
+  return -1;
+}
