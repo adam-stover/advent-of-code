@@ -7,7 +7,7 @@ export async function getLines(url) {
 }
 
 export function ints(str) {
-  return str.match(/(?:(?<!\d)-)?\d+/g).map(Number);
+  return str.match(/(?:(?<!\d)-)?\d+/g)?.map(Number);
 }
 
 export function cloneMatrix(matrix) {
