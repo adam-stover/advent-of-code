@@ -44,47 +44,49 @@ class CircularList {
     const node = this.cache[key];
     let num = node.val;
 
-    if (num === 0) return;
-    if (num === 1) {
-      this.swapAdjacent(node, node.next);
-      return;
-    } else if (num === -1) {
-      this.swapAdjacent(node.prev, node);
-      return;
-    }
+    // if (num === 0) return;
+    // if (num === 1) {
+    //   this.swapAdjacent(node, node.next);
+    //   return;
+    // } else if (num === -1) {
+    //   this.swapAdjacent(node.prev, node);
+    //   return;
+    // }
 
-    const direction = num > 0;
-    let target = node;
+    // const direction = num > 0;
+    // let target = node;
 
     while (num > 0) {
-      target = target.next;
+      this.swapAdjacent(node, node.next);
+      // target = target.next;
       num--;
     }
     while (num < 0) {
-      target = target.prev;
+      this.swapAdjacent(node.prev, node);
+      // target = target.prev;
       num++;
     }
 
-    if (!direction) target = target.prev;
+    // if (!direction) target = target.prev;
 
-    if (node === target || node.prev === target) {
-      console.log(`we hit ourselves for ${key}th number: ${node.val} || ${target.val}`);
-      return;
-    }
-    if (node.next === target) {
-      console.log(`we swapping adjacent for ${key}th number: ${node.val} to ${target.val}`)
-      this.swapAdjacent(node, target);
-      return;
-    }
+    // if (node === target || node.prev === target) {
+    //   console.log(`we hit ourselves for ${key}th number: ${node.val} || ${target.val}`);
+    //   return;
+    // }
+    // if (node.next === target) {
+    //   console.log(`we swapping adjacent for ${key}th number: ${node.val} to ${target.val}`)
+    //   this.swapAdjacent(node, target);
+    //   return;
+    // }
 
-    // inserting node after target
-    node.prev.next = node.next;
-    node.next.prev = node.prev;
-    const tempNext = target.next;
-    target.next = node;
-    tempNext.prev = node;
-    node.prev = target;
-    node.next = tempNext;
+    // // inserting node after target
+    // node.prev.next = node.next;
+    // node.next.prev = node.prev;
+    // const tempNext = target.next;
+    // target.next = node;
+    // tempNext.prev = node;
+    // node.prev = target;
+    // node.next = tempNext;
   }
 
   getNth(n) {
