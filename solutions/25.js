@@ -10,14 +10,6 @@ const SNAFU_MAP = {
   '=': -2,
 };
 
-const DEC_MAP = {
-  2: '2',
-  1: '1',
-  0: '0',
-  '-1': '-',
-  '-2': '=',
-};
-
 const convertSnafuDec = (snafu) => {
   let res = 0;
   for (
@@ -48,11 +40,7 @@ const convertDecSnafu = (dec) => {
 
   while (i >= 0) {
     const unit = 5 ** i;
-    // console.log(`unit: ${unit}`)
-
     const maxOneLess = maxWithDigits(i);
-
-    // console.log(`maxOneLess: ${maxOneLess}`)
 
     if (dec >= unit * 2 - maxOneLess) {
       res += '2';
@@ -69,8 +57,6 @@ const convertDecSnafu = (dec) => {
     } else {
       res += '0';
     }
-
-    // console.log(res);
 
     i--;
   }

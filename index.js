@@ -37,6 +37,6 @@ import dayNine from './solutions/9.js';
 // daySixteen();
 // daySeventeen();
 // dayEighteen();
-// dayNineteen();
+dayNineteen();
 
-dayTwentyFive();
+// dayTwentyFive();
