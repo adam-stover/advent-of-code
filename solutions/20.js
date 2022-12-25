@@ -1,6 +1,8 @@
-import { cloneObj, getLines, ints, max } from '../utils.js';
+import { getLines } from '../utils.js';
 
 const URL = './inputs/20.txt';
+const DECRYPTION_KEY = 811589153;
+const NUM_MIXES = 10;
 
 class Node {
   constructor(val, prev, next) {
@@ -13,6 +15,7 @@ class Node {
 class CircularList {
   constructor(arr) {
     const first = new Node(arr[0]);
+    this.size = arr.length;
     this.cache = [first];
     let cur = first;
 
@@ -42,51 +45,51 @@ class CircularList {
 
   move(key) {
     const node = this.cache[key];
-    let num = node.val;
+    let num = node.val % (this.size - 1);
 
-    // if (num === 0) return;
-    // if (num === 1) {
-    //   this.swapAdjacent(node, node.next);
-    //   return;
-    // } else if (num === -1) {
-    //   this.swapAdjacent(node.prev, node);
-    //   return;
-    // }
+    if (num === 0) return;
+    if (num === 1) {
+      this.swapAdjacent(node, node.next);
+      return;
+    } else if (num === -1) {
+      this.swapAdjacent(node.prev, node);
+      return;
+    }
 
-    // const direction = num > 0;
-    // let target = node;
+    const direction = num > 0;
+    let target = node;
 
     while (num > 0) {
-      this.swapAdjacent(node, node.next);
-      // target = target.next;
+      // this.swapAdjacent(node, node.next);
+      target = target.next;
       num--;
     }
     while (num < 0) {
-      this.swapAdjacent(node.prev, node);
-      // target = target.prev;
+      // this.swapAdjacent(node.prev, node);
+      target = target.prev;
       num++;
     }
 
-    // if (!direction) target = target.prev;
+    if (!direction) target = target.prev;
 
-    // if (node === target || node.prev === target) {
-    //   console.log(`we hit ourselves for ${key}th number: ${node.val} || ${target.val}`);
-    //   return;
-    // }
-    // if (node.next === target) {
-    //   console.log(`we swapping adjacent for ${key}th number: ${node.val} to ${target.val}`)
-    //   this.swapAdjacent(node, target);
-    //   return;
-    // }
+    if (node === target || node.prev === target) {
+      console.log(`we hit ourselves for ${key}th number: ${node.val} || ${target.val}`);
+      return;
+    }
+    if (node.next === target) {
+      console.log(`we swapping adjacent for ${key}th number: ${node.val} to ${target.val}`)
+      this.swapAdjacent(node, target);
+      return;
+    }
 
-    // // inserting node after target
-    // node.prev.next = node.next;
-    // node.next.prev = node.prev;
-    // const tempNext = target.next;
-    // target.next = node;
-    // tempNext.prev = node;
-    // node.prev = target;
-    // node.next = tempNext;
+    // inserting node after target
+    node.prev.next = node.next;
+    node.next.prev = node.prev;
+    const tempNext = target.next;
+    target.next = node;
+    tempNext.prev = node;
+    node.prev = target;
+    node.next = tempNext;
   }
 
   getNth(n) {
@@ -110,7 +113,7 @@ class CircularList {
   }
 }
 
-export default async function dayTwenty() {
+const partOne = async () => {
   const nums = (await getLines(URL)).map(Number);
 
   const list = new CircularList(nums);
@@ -124,8 +127,23 @@ export default async function dayTwenty() {
   const targets = [1000, 2000, 3000];
 
   const answers = targets.map(n => list.getNth(n));
-
   answers.forEach(a => console.log(a));
+  console.log(answers.reduce((acc, cur) => acc + cur));
+}
 
+export default async function dayTwenty() {
+  await partOne();
+  const nums = (await getLines(URL)).map(n => Number(n) * DECRYPTION_KEY);
+  const list = new CircularList(nums);
+
+  for (let i = 0; i < NUM_MIXES; ++i) {
+    for (let j = 0; j < nums.length; ++j) {
+      list.move(j);
+    }
+  }
+
+  const targets = [1000, 2000, 3000];
+  const answers = targets.map(n => list.getNth(n));
+  answers.forEach(a => console.log(a));
   console.log(answers.reduce((acc, cur) => acc + cur));
 }
