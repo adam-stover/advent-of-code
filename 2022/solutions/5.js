@@ -1,4 +1,4 @@
-import { getLines } from '../utils.js';
+import { getLines } from '../../utils.js';
 
 const URL = './inputs/5.txt';
 
