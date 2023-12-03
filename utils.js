@@ -10,6 +10,20 @@ export function ints(str) {
   return str.match(/(?:(?<!\d)-)?\d+/g)?.map(Number);
 }
 
+export function makeMatrix(length, height, fill) {
+  const matrix = [];
+
+  for (let i = 0; i < height; i++) {
+    const row = [];
+    for (let j = 0; j < length; j++) {
+      row.push(fill);
+    }
+    matrix.push(row);
+  }
+
+  return matrix;
+}
+
 export function cloneMatrix(matrix) {
   const newMatrix = [];
   for (let i = 0; i < matrix.length; ++i) {
