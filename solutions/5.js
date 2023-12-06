@@ -107,6 +107,8 @@ export async function dayFive() {
   // 19239305
   // 21399250
   // 1287215595
+  // REAL ANSWER IS:
+  // 60294664
   // for (let i = 0; i < seedRanges.length; i += 2)
 
   //   for (let j = seedRanges[i]; j < seedRanges[i] + seedRanges[i + 1]; j++) {
