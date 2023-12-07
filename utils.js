@@ -10,6 +10,16 @@ export function ints(str) {
   return str.match(/(?:(?<!\d)-)?\d+/g)?.map(Number);
 }
 
+export function count(arr, el) {
+  let res = 0;
+
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === el) res++;
+  }
+
+  return res;
+}
+
 export function makeMatrix(length, height, fill) {
   const matrix = [];
 
@@ -71,6 +81,21 @@ export function rangeUnion(ranges) {
 
 export function has(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+export function maxTwo(arr) {
+  const maxes = [arr[0], -Infinity];
+
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] > maxes[0]) {
+      maxes[1] = maxes[0];
+      maxes[0] = arr[i];
+    } else if (arr[i] > maxes[1]) {
+      maxes[1] = arr[i];
+    }
+  }
+
+  return maxes;
 }
 
 export function max(arr, cb) {
