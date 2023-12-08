@@ -1,4 +1,4 @@
-import { getLines, ints, count, makeMatrix, cloneMatrix, cloneObj, filterMap, rangeUnion, has, maxTwo, max, min, minmax, findLastIndex } from '../utils.js';
+import { getLines, ints, count, makeMatrix, cloneMatrix, cloneObj, filterMap, rangeUnion, has, maxTwo, maxN, max, min, minmax, findLastIndex } from '../utils.js';
 
 const URL = './inputs/7.txt';
 
@@ -45,7 +45,7 @@ const type = (hand) => {
 const _type = (hand) => {
   const jackCount = count(hand, 'J');
   if (!jackCount) return type(hand);
-  if (jackCount === 5) return 7;
+  if (jackCount >= 4) return 7;
   const jackless = [];
   for (let i = 0; i < hand.length; i++) {
     if (hand[i] !== 'J') jackless.push(hand[i]);

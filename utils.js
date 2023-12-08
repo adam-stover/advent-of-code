@@ -20,6 +20,16 @@ export function count(arr, el) {
   return res;
 }
 
+export function makeArray(length, fill) {
+  const arr = [];
+
+  for (let i = 0; i < length; i++) {
+    arr.push(fill);
+  }
+
+  return arr;
+}
+
 export function makeMatrix(length, height, fill) {
   const matrix = [];
 
@@ -83,7 +93,29 @@ export function has(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
+export function maxN(arr, n) {
+  if (arr.length < n) console.warn(`arr should be length n (${n}) or greater`);
+
+  const maxes = makeArray(n, -Infinity);
+
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < maxes.length; j++) {
+      if (arr[i] > maxes[j]) {
+        for (let k = maxes.length - 1; k > j; k--) {
+          maxes[k] = maxes[k - 1];
+        }
+        maxes[j] = arr[i];
+        break;
+      }
+    }
+  }
+
+  return maxes;
+}
+
 export function maxTwo(arr) {
+  if (arr.length < 2) console.warn('arr should be length two or greater');
+
   const maxes = [arr[0], -Infinity];
 
   for (let i = 1; i < arr.length; i++) {
