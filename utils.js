@@ -10,6 +10,10 @@ export function ints(str) {
   return str.match(/(?:(?<!\d)-)?\d+/g)?.map(Number);
 }
 
+export const gcd = (a, b) => a ? gcd(b % a, a) : b;
+
+export const lcm = (a, b) => a * b / gcd(a, b);
+
 export function count(arr, el) {
   let res = 0;
 
