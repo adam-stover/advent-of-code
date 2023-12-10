@@ -10,6 +10,16 @@ export function ints(str) {
   return str.match(/(?:(?<!\d)-)?\d+/g)?.map(Number);
 }
 
+export const diff = (nums) => {
+  const differences = [];
+
+  for (let i = 1; i < nums.length; i++) {
+    differences.push(nums[i] - nums[i - 1]);
+  }
+
+  return differences;
+}
+
 export const gcd = (a, b) => a ? gcd(b % a, a) : b;
 
 export const lcm = (a, b) => a * b / gcd(a, b);
