@@ -312,7 +312,7 @@ export async function dayTen() {
         const point = queue.shift();
         const [i, j] = point;
 
-        if (!j || j >= n - 1 || !i || i >= m - 1) {
+        if (!j || j >= n - 1 || !i || i >= m - 1 || rows[i][j] === OUTSIDE) {
           escaped = true;
           break;
         }
