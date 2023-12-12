@@ -187,3 +187,43 @@ export function findLastIndex(arr, cb) {
 
   return -1;
 }
+
+export const sum = (arr) => arr.reduce((acc, cur) => acc + cur, 0);
+
+/** Used as references for various `Number` constants. */
+const INFINITY = 1 / 0;
+/** Built-in value reference. */
+const spreadableSymbol = Symbol.isConcatSpreadable
+
+function isFlattenable(value) {
+  return Array.isArray(value) || !!(value && value[spreadableSymbol]);
+}
+
+function baseFlatten(array, depth, predicate, isStrict, result) {
+  predicate || (predicate = isFlattenable)
+  result || (result = [])
+
+  if (array == null) {
+    return result
+  }
+
+  for (const value of array) {
+    if (depth > 0 && predicate(value)) {
+      if (depth > 1) {
+        // Recursively flatten arrays (susceptible to call stack limits).
+        baseFlatten(value, depth - 1, predicate, isStrict, result)
+      } else {
+        result.push(...value)
+      }
+    } else if (!isStrict) {
+      result[result.length] = value
+    }
+  }
+  return result
+}
+
+export const flattenDeep = (array) => {
+  const length = array == null ? 0 : array.length;
+  return length ? baseFlatten(array, INFINITY) : [];
+};
+
