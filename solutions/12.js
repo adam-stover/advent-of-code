@@ -12,6 +12,7 @@ export async function dayTwelve() {
   const rows = await getLines(URL);
 
   const doesRowPass = (row, counts) => {
+    // steps++;
     // if (row === '.#.###.#.######') console.log('wtf');
     // console.log(row);
     const groups = row.split(GOOD).filter(x => x);
@@ -23,10 +24,11 @@ export async function dayTwelve() {
     }
     // console.log(`Row ${row} passed!`)
     return true;
-  }
+  };
 
   const wouldThisPass = (groups, arr, index) => {
     const measuredGroups = [];
+    let groupIndex = 0;
 
     let currentGroup = 0;
 
@@ -34,40 +36,57 @@ export async function dayTwelve() {
       if (arr[i] === BAD) currentGroup++;
       else if (currentGroup > 0) {
         measuredGroups.push(currentGroup);
+        if (measuredGroups[groupIndex] !== groups[groupIndex++]) return false;
         currentGroup = 0;
       }
     }
 
-    if (arr.length <= measuredGroups.length) {
+    if (groups.length <= measuredGroups.length) {
       // console.log(`We have already failed. Shouldn't be this many groups dawg ${arr.length}`);
       return false;
     }
 
-    for (let i = 0; i < measuredGroups.length; i++) {
-      if (measuredGroups[i] !== groups[i]) {
-        // console.log(`We have already failed. ${measuredGroups[i]} should be ${groups[i]}`);
-        return false;
-      }
-    }
+    currentGroup++
 
-    if (currentGroup > arr[measuredGroups.length]) {
+    // for (let i = 0; i < measuredGroups.length; i++) {
+    //   if (measuredGroups[i] !== groups[i]) {
+    //     // console.log(`We have already failed. ${measuredGroups[i]} should be ${groups[i]}`);
+    //     return false;
+    //   }
+    // }
+
+    if (currentGroup > groups[groupIndex]) {
       // console.log(`We would be building too large a group. ${currentGroup} bigger than ${arr[measuredGroups.length]}`);
       return false;
     }
 
+    // console.log(`${arr.join('')} could pass with ${groups}`)
     return true;
-  }
+  };
+
+  const getGroupCombos = (arr, groups, groupIndex) => {
+    const needed = sum(groups);
+    const have = count(arr, BAD);
+    const missing = needed - have;
+    const group = groups[groupIndex];
+  };
 
   const getCombinations = (groupCounts, needed, missing, arr, indices, indicesStart = 0) => {
     steps++;
-    if (missing === 0) return [];
+    if (missing === 0) return 0;
     if (missing === 1) {
-      const res = [];
+      let res = 0;
       for (let i = indicesStart; i < indices.length; i++) {
         const cloned = [...arr];
         cloned[indices[i]] = BAD;
+        // let hm = 1;
+        // for (let j = cloned[indices[i] - 1]; j >= 0; j--) {
+        //   if (arr[j] === BAD) hm++;
+        // }
+        // if (hm === groupCounts[groupCounts.length - 1]) res += 1;
         const thing = cloned.map(c => c === IDK ? GOOD : c).join('');
-        if (doesRowPass(thing, groupCounts)) res.push(thing);
+        if (doesRowPass(thing, groupCounts)) res++;
+        // else console.log(`${thing} failed for ${groupCounts}`);
       }
       return res;
     };
@@ -77,21 +96,21 @@ export async function dayTwelve() {
         cloned[indices[i]] = BAD;
       }
       const thing = cloned.map(c => c === IDK ? GOOD : c).join('');
-      if (doesRowPass(thing, groupCounts)) return [thing];
-      return [];
+      if (doesRowPass(thing, groupCounts)) return 1;
+      return 0;
     }
-    const results = [];
+    let res = 0;
     for (let i = indicesStart; i < indices.length; i++) {
       if (!wouldThisPass(groupCounts, arr, indices[i])) continue;
-      const innerClonedArr = [...arr];
+      const cloned = [...arr];
       for (let j = indicesStart; j < i; j++) {
-        innerClonedArr[indices[j]] = GOOD;
+        cloned[indices[j]] = GOOD;
       }
-      innerClonedArr[indices[i]] = BAD;
-      results.push(getCombinations(groupCounts, needed, missing - 1, innerClonedArr, indices, i + 1));
+      cloned[indices[i]] = BAD;
+      res += getCombinations(groupCounts, needed, missing - 1, cloned, indices, i + 1);
     }
-    return flattenDeep(results)/*.filter(str => count(str, BAD) === needed && doesRowPass(str, groupCounts));*/
-  }
+    return res/*.filter(str => count(str, BAD) === needed && doesRowPass(str, groupCounts));*/
+  };
 
   let res = 0;
 
@@ -137,17 +156,17 @@ export async function dayTwelve() {
 
     const passing = getCombinations(groupCounts, needed, missing, recordArr, idkIndices);
 
-    if (!passing.length) {
+    if (!passing) {
       console.log(`RED FLAG ON ${row}`);
       console.log(`We need ${needed} broken. We have ${badCount} so we need to choose ${missing} from ${idkCount}`);
     }
-    res += passing.length;
+    res += passing;
 
     // console.log('----------------------------------------------------------------')
     performance.mark('B');
     performance.measure('A to B', 'A', 'B');
     performance.clearMarks();
-    console.log(`Processed ${row} with ${passing.length} after generating ${steps} combos`);
+    console.log(`Processed ${row} with ${passing} after generating ${steps} combos`);
   }
 
   console.log(res);
@@ -161,6 +180,11 @@ export async function dayTwelve() {
 // P2 durations
 // times: 16099 | 132672
 // times: 15693 | 131070
-// times: 4962  | 84312
+// times: 4962  |  84312
+// times: 4588  |  83049
+// times: 4054  |  80236 -- after switching to numbers instead of arrays, should avoid heap overflow but may still be too slow
+// times: 3976  |  79772
+// times: 3169  |  45876 -- fixing logic in `wouldThisPass` (it wasn't strict enough)
+
 
 export default dayTwelve;
