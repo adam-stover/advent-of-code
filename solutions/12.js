@@ -1,5 +1,5 @@
 import { getLines, ints, diff, gcd, lcm, count, makeArray, makeMatrix, cloneMatrix, cloneObj, filterMap, rangeUnion, has, maxTwo, maxN, max, min, minmax, findLastIndex, sum, flattenDeep } from '../utils.js';
-import { PerformanceObserver, performance } from 'node:perf_hooks';
+// import { PerformanceObserver, performance } from 'node:perf_hooks';
 
 let URL = './inputs/12.txt';
 // URL = './inputs/t.txt';
@@ -11,15 +11,15 @@ const IDK = '?';
 export async function dayTwelve() {
   const rows = await getLines(URL);
 
-  function perfObserver(list, _observer) {
-    list.getEntries().forEach((entry) => {
-      if (entry.entryType === 'measure') {
-        console.log(`${entry.name}'s duration: ${entry.duration}`);
-      }
-    });
-  }
-  const observer = new PerformanceObserver(perfObserver);
-  observer.observe({ entryTypes: ['measure'] });
+  // function perfObserver(list, _observer) {
+  //   list.getEntries().forEach((entry) => {
+  //     if (entry.entryType === 'measure') {
+  //       console.log(`${entry.name}'s duration: ${entry.duration}`);
+  //     }
+  //   });
+  // }
+  // const observer = new PerformanceObserver(perfObserver);
+  // observer.observe({ entryTypes: ['measure'] });
   // let steps = 0;
 
   let res = 0;
