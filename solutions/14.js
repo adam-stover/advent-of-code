@@ -115,8 +115,8 @@ export async function dayFourteen() {
     tiltEast();
   }
 
-  // const COUNT = 1000000000;
-  const COUNT = 10000;
+  const REAL_COUNT = 1000000000;
+  const COUNT = 1000;
   const cache = {};
   let res = 0;
 
@@ -136,8 +136,11 @@ export async function dayFourteen() {
   }
 
   const keys = Object.keys(cache).filter(key => cache[key].length > 1);
+  const sampleValues = cache[keys[0]];
+  const cycleLength = sampleValues[1] - sampleValues[0];
+  const numWeWant = (REAL_COUNT - sampleValues[0]) % cycleLength + sampleValues[0];
 
-  const chosenKey = keys.find(key => cache[key].includes(98))
+  const chosenKey = keys.find(key => cache[key].includes(numWeWant))
 
   // console.log(cache[chosenKey]);
 
@@ -154,5 +157,6 @@ export async function dayFourteen() {
 }
 
 // 96848 is not right
+// 98894 LET'S GO
 
 export default dayFourteen;
