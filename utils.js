@@ -38,7 +38,8 @@ export function makeArray(length, fill) {
   const arr = [];
 
   for (let i = 0; i < length; i++) {
-    arr.push(fill);
+    const f = typeof fill === 'function' ? fill(i) : fill;
+    arr.push(f);
   }
 
   return arr;
