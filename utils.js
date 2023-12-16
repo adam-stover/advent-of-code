@@ -51,7 +51,8 @@ export function makeMatrix(length, height, fill) {
   for (let i = 0; i < height; i++) {
     const row = [];
     for (let j = 0; j < length; j++) {
-      row.push(fill);
+      const f = typeof fill === 'function' ? fill(i, j) : fill;
+      row.push(f);
     }
     matrix.push(row);
   }
