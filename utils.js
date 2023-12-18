@@ -45,6 +45,22 @@ export function makeArray(length, fill) {
   return arr;
 }
 
+export function makeDeepMatrix(fill, ...dimensions) {
+  const matrix = []
+  const dimension = dimensions[0];
+  const rest = dimensions.slice(1);
+
+  for (let i = 0; i < dimension; i++) {
+    if (rest.length === 1) {
+      matrix.push(makeArray(rest[0], fill));
+    } else {
+      matrix.push(makeDeepMatrix(fill, ...rest));
+    }
+  }
+
+  return matrix;
+}
+
 export function makeMatrix(length, height, fill) {
   const matrix = [];
 
@@ -229,3 +245,107 @@ export const flattenDeep = (array) => {
   return length ? baseFlatten(array, INFINITY) : [];
 };
 
+export class MinHeap {
+  constructor(comparator) {
+      this.heap = [];
+      this.comparator = comparator;
+  }
+
+  // Helper Methods
+  getLeftChildIndex(parentIndex) {
+      return 2 * parentIndex + 1;
+  }
+  getRightChildIndex(parentIndex) {
+      return 2 * parentIndex + 2;
+  }
+  getParentIndex(childIndex) {
+      return Math.floor((childIndex - 1) / 2);
+  }
+  hasLeftChild(index) {
+      return this.getLeftChildIndex(index) < this.size;
+  }
+  hasRightChild(index) {
+      return this.getRightChildIndex(index) < this.size;
+  }
+  hasParent(index) {
+      return this.getParentIndex(index) >= 0;
+  }
+  leftChild(index) {
+      return this.heap[this.getLeftChildIndex(index)];
+  }
+  rightChild(index) {
+      return this.heap[this.getRightChildIndex(index)];
+  }
+  parent(index) {
+      return this.heap[this.getParentIndex(index)];
+  }
+
+  // Functions to create Min Heap
+  swap(indexOne, indexTwo) {
+      const temp = this.heap[indexOne];
+      this.heap[indexOne] = this.heap[indexTwo];
+      this.heap[indexTwo] = temp;
+  }
+
+  get size() {
+    return this.heap.length;
+  }
+
+  peek() {
+      if (this.size === 0) {
+          return null;
+      }
+      return this.heap[0];
+  }
+
+  // Removing an element will remove the
+  // top element with highest priority then
+  // heapifyDown will be called
+  remove() {
+      if (this.size === 0) {
+          return null;
+      }
+      const item = this.heap[0];
+      this.heap[0] = this.heap[this.size - 1];
+      this.heap.pop();
+      this.heapifyDown();
+      return item;
+  }
+
+  add(item) {
+      this.heap.push(item);
+      this.heapifyUp();
+  }
+
+  heapifyUp() {
+      let index = this.size - 1;
+      while (this.hasParent(index) && this.comparator(this.parent(index)) > this.comparator(this.heap[index])) {
+          this.swap(this.getParentIndex(index), index);
+          index = this.getParentIndex(index);
+      }
+  }
+
+  heapifyDown() {
+      let index = 0;
+      while (this.hasLeftChild(index)) {
+          let smallerChildIndex = this.getLeftChildIndex(index);
+          if (this.hasRightChild(index) && this.comparator(this.rightChild(index)) < this.comparator(this.leftChild(index))) {
+              smallerChildIndex = this.getRightChildIndex(index);
+          }
+          if (this.comparator(this.heap[index]) < this.comparator(this.heap[smallerChildIndex])) {
+              break;
+          } else {
+              this.swap(index, smallerChildIndex);
+          }
+          index = smallerChildIndex;
+      }
+  }
+
+  printHeap() {
+      let heap =` ${this.heap[0]} `
+      for(let i = 1; i < this.size; i++) {
+          heap += ` ${this.heap[i]} `;
+      }
+      console.log(heap);
+  }
+}
