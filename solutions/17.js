@@ -133,7 +133,7 @@ export async function daySeventeen() {
     let [i, j, dir, streak] = end;
     let total = 0;
     while (i !== 0 || j !== 0) {
-      console.log(`${i}|${j}`);
+      // console.log(`${i}|${j}`);
       total += rows[i][j];
       [i, j, dir, streak] = cameFrom[i][j][dir][streak];
     }
