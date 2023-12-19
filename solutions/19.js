@@ -114,39 +114,10 @@ export async function dayNineteen() {
 
       return {
         predicate: (part) => comparator === '<' ? part[category] < num : part[category] > num,
-        category,
         destination,
       };
     });
     workflows[name] = conditionals;
-  }
-
-  const tryit = (cat, val) => {
-    const part = { [cat]: val };
-    let destination = 'in';
-
-    while (destination !== 'A' && destination !== 'R') {
-      const workflow = workflows[destination];
-
-      for (const c of workflow) {
-        if (!c.category || c.category !== cat || c.predicate(part)) {
-          destination = c.destination;
-          break;
-        }
-      }
-    }
-
-    return destination
-  }
-
-  const getCombos = (cat) => {
-    let total = 0;
-
-    for (let i = 1; i <= 4000; i++) {
-      if (tryit(cat, i) === 'A') total++;
-    }
-
-    return total;
   }
 
   for (const key of CAT_KEYS) {
@@ -171,13 +142,11 @@ export async function dayNineteen() {
 
   let res = 0;
 
-  // log(categoryRanges)
-
   for (const xrange of categoryRanges.x) {
     const xtotal = xrange[1] - xrange[0];
     const xsample = Math.floor((xrange[0] + xrange[1]) / 2);
     const part = { x: xsample };
-    console.log(xrange);
+    log(xrange)
     for (const mrange of categoryRanges.m) {
       const mtotal = mrange[1] - mrange[0];
       const msample = Math.floor((mrange[0] + mrange[1]) / 2);
@@ -190,9 +159,7 @@ export async function dayNineteen() {
           const stotal = srange[1] - srange[0];
           const ssample = Math.floor((srange[0] + srange[1]) / 2);
           part.s = ssample;
-          // log(part);
           const dest = process(part);
-          // log(dest);
           if (dest === 'A') {
             const total = xtotal * mtotal * atotal * stotal;
             // log(total);
@@ -204,7 +171,9 @@ export async function dayNineteen() {
     }
   }
 
-  log(res)
+  log(res);
+
+  // 133973513090020
 }
 
 export default dayNineteen;
