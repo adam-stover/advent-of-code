@@ -78,6 +78,7 @@ export async function dayTwenty() {
     } else {
       mod.inputs[input] = pulse;
       const outPulse =  Object.values(mod.inputs).every(p => p === HIGH) ? LOW : HIGH;
+      if (outPulse === HIGH && importantInputs.includes(mod.name)) log(`We have a high pulse from ${mod.name} at press ${i}`)
       for (const out of mod.outputs) {
         queue.push([mod.name, out, outPulse]);
       }
@@ -92,25 +93,26 @@ export async function dayTwenty() {
     }
   }
 
-  const COUNT = 1000000000;
+  const COUNT = Number.MAX_SAFE_INTEGER;
   const importantInputs = Object.keys(modules.zr.inputs);
-  for (let i = 1; i <= COUNT; i++) {
+  let i = 1;
+
+  while (i <= COUNT) {
     if (button()) {
       log(`Took ${i} button presses.`)
       break;
     }
     if (i % 10000000 === 0) {
-      log(`Pushed button ${i / 10000000} * 10 million times and NOTHING.`)
-      for (const input of importantInputs) {
-        log(modules[input].inputs)
-      }
+      log(`Pushed button ${i / 1000000} million times: ${flattenDeep(importantInputs.map(imp => Object.values(modules[imp].inputs))).join(' ')}`);
     }
+    i++;
   }
 
   // console.log(modules);
   // log(lowPulses);
   // log(highPulses);
   // log(lowPulses * highPulses);
+  // Used the log on line 81 to find the cycles and just found lcm
 }
 
 export default dayTwenty;
