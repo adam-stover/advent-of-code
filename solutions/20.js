@@ -78,7 +78,11 @@ export async function dayTwenty() {
     } else {
       mod.inputs[input] = pulse;
       const outPulse =  Object.values(mod.inputs).every(p => p === HIGH) ? LOW : HIGH;
-      if (outPulse === HIGH && importantInputs.includes(mod.name)) log(`We have a high pulse from ${mod.name} at press ${i}`)
+      if (outPulse === HIGH && importantInputs.includes(mod.name)) {
+        if (!has(highPulses, mod.name)) highPulses[mod.name] = [i];
+        else highPulses[mod.name].push(i);
+        log(`We have a high pulse from ${mod.name} at press ${i}`);
+      }
       for (const out of mod.outputs) {
         queue.push([mod.name, out, outPulse]);
       }
@@ -95,23 +99,17 @@ export async function dayTwenty() {
 
   const COUNT = Number.MAX_SAFE_INTEGER;
   const importantInputs = Object.keys(modules.zr.inputs);
+  const highPulses = {};
   let i = 1;
 
   while (i <= COUNT) {
-    if (button()) {
-      log(`Took ${i} button presses.`)
-      break;
-    }
-    if (i % 10000000 === 0) {
-      log(`Pushed button ${i / 1000000} million times: ${flattenDeep(importantInputs.map(imp => Object.values(modules[imp].inputs))).join(' ')}`);
-    }
+    button();
+    if (importantInputs.every(key => highPulses[key]?.length >= 1)) break;
     i++;
   }
 
-  // console.log(modules);
-  // log(lowPulses);
-  // log(highPulses);
-  // log(lowPulses * highPulses);
+  log(importantInputs.map(key => highPulses[key][0]).reduce(lcm));
+
   // Used the log on line 81 to find the cycles and just found lcm
 }
 
