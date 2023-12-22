@@ -49,6 +49,24 @@ export function makeArray(length, fill) {
   return arr;
 }
 
+export function mergeMatrix(a, b, mergeRight = false) {
+  const c = [];
+
+  if (mergeRight) {
+    for (let i = 0; i < a.length; i++) {
+      c.push(a[i].concat(b[i]));
+    }
+
+    return c;
+  }
+
+  for (const row of [...a, ...b]) {
+    c.push([...row]);
+  }
+
+  return c;
+}
+
 export function makeDeepMatrix(fill, ...dimensions) {
   const matrix = []
   const dimension = dimensions[0];
