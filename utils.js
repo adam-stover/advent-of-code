@@ -298,15 +298,15 @@ export const hexToDec = (hex) => {
   return res;
 }
 
-export class MinHeap {
+class Heap {
   constructor(comparator) {
-      this.heap = [];
-      this.comparator = comparator;
+    this.heap = [];
+    this.comparator = comparator;
   }
 
   // Helper Methods
   getLeftChildIndex(parentIndex) {
-      return 2 * parentIndex + 1;
+    return 2 * parentIndex + 1;
   }
   getRightChildIndex(parentIndex) {
       return 2 * parentIndex + 2;
@@ -370,6 +370,20 @@ export class MinHeap {
       this.heapifyUp();
   }
 
+  printHeap() {
+    let heap =` ${this.heap[0]} `
+    for(let i = 1; i < this.size; i++) {
+        heap += ` ${this.heap[i]} `;
+    }
+    console.log(heap);
+}
+}
+
+export class MinHeap extends Heap {
+  constructor(comparator) {
+    super(comparator);
+  }
+
   heapifyUp() {
       let index = this.size - 1;
       while (this.hasParent(index) && this.comparator(this.parent(index)) > this.comparator(this.heap[index])) {
@@ -393,12 +407,34 @@ export class MinHeap {
           index = smallerChildIndex;
       }
   }
-
-  printHeap() {
-      let heap =` ${this.heap[0]} `
-      for(let i = 1; i < this.size; i++) {
-          heap += ` ${this.heap[i]} `;
-      }
-      console.log(heap);
-  }
 }
+
+export class MaxHeap extends Heap {
+  constructor(comparator) {
+    super(comparator);
+  }
+
+  heapifyUp() {
+      let index = this.heap.length - 1;
+      while (this.hasParent(index) && this.comparator(this.parent(index)) < this.comparator(this.heap[index])) {
+          this.swap(this.getParentIndex(index), index);
+          index = this.getParentIndex(index);
+      }
+  }
+
+  heapifyDown() {
+      let index = 0;
+      while (this.hasLeftChild(index)) {
+          let largerChildIndex = this.getLeftChildIndex(index);
+          if (this.hasRightChild(index) && this.comparator(this.rightChild(index)) > this.comparator(this.leftChild(index))) {
+              largerChildIndex = this.getRightChildIndex(index);
+          }
+          if (this.comparator(this.heap[index]) > this.comparator(this.heap[largerChildIndex])) {
+              break;
+          } else {
+              this.swap(index, largerChildIndex);
+          }
+          index = largerChildIndex;
+      }
+  }
+};
