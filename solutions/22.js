@@ -93,6 +93,7 @@ export async function dayTwentyTwo() {
     if (a.start.z - best > 1) {
       if (brickAFallsTo.length) stopBrick(a, brickAFallsTo[0]);
       else {
+        // For when we hit ground
         stopBrick(a, { end: { z: 0 } })
       }
       return FALL;
@@ -112,7 +113,7 @@ export async function dayTwentyTwo() {
 
   while (state === FALL) {
     for (let i = 0; i < nonBaseBricks.length; i++) {
-      // log('handlin')
+      // can make faster by removing bricks that fall to 0 from nonBaseBreaks
       if (handleSupport(i) === FALL) {
         state = FALL;
         break;
@@ -153,7 +154,7 @@ export async function dayTwentyTwo() {
     // log("BLOCKS TO TEST");
     // log(blocksToTest)
 
-    log(`Processing brick ${brick.name}`)
+    // log(`Processing brick ${brick.name}`)
     while (blocksToTest.length) {
       const nextDestroyed = [];
       for (const block of blocksToTest) {
@@ -169,19 +170,6 @@ export async function dayTwentyTwo() {
     }
     // log(`${brick.name} causes ${res.length} to fall.`)
     // log(res)
-    return res;
-  }
-
-  const howManyReallyFall = (brick) => {
-    let res = 0;
-    let current = directFalls[brick];
-
-    while (current) {
-      res += current.length;
-      current = flattenDeep(current.map(c => directFalls[c.name]));
-    }
-
-    log(`${brick.name} caused ${res} to REALLY fall`);
     return res;
   }
 
