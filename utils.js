@@ -107,6 +107,22 @@ export function cloneMatrix(matrix) {
   return newMatrix;
 }
 
+export function deepCloneObj(obj) {
+  const newObj = {}
+
+  for (const key of Object.keys(obj)) {
+    const val = Array.isArray(obj[key])
+      ? cloneMatrix(obj[key])
+      : typeof obj[key] === 'object'
+      ? deepCloneObj(obj[key])
+      : obj[key];
+
+    newObj[key] = val;
+  }
+
+  return newObj;
+}
+
 export function cloneObj(obj) {
   const newObj = {}
 
