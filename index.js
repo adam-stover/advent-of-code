@@ -47,5 +47,5 @@ import dayTwentyFive from './solutions/25.js';
 // dayTwentyOne();
 // dayTwentyTwo();
 // dayTwentyThree();
-// dayTwentyFour();
-dayTwentyFive();
+dayTwentyFour();
+// dayTwentyFive();

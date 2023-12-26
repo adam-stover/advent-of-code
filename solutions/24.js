@@ -149,7 +149,7 @@ export async function dayTwentyFour() {
   const set = new Set();
 
   for (const h of hailstones) {
-    
+
   }
 
   // for (let i = 0; i < rows.length - 1; i++) {
@@ -170,6 +170,7 @@ export async function dayTwentyFour() {
 
 // 14390 is not right
 // 17906 is correct
+// 422604721834653696 is too high
 
 
 export default dayTwentyFour;

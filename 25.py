@@ -1,21 +1,32 @@
-import networkx
-from math import prod
+from collections import defaultdict
 
-with open('inputs/25.txt') as f:
-  components = {comp: con.split(' ') for (comp, con) in [l.strip().split(': ') for l in f.readlines()]}
-  comps = list(components.keys())
-  for comp in comps:
-    connections = components[comp]
-    for con in connections:
-      if con not in components:
-        components[con] = [comp]
-      elif comp not in components[con]:
-        components[con].append(comp)
+text = open('input_day25.txt').read()
+lines = text.splitlines()
 
-  graph = networkx.Graph(components)
+graph = defaultdict(list)
+for l in lines:
+    s, o = l.split(': ')
+    for z in o.split():
+        graph[s].append(z)
+        graph[z].append(s)
 
-  edge_cut = networkx.minimum_edge_cut(graph)
-  graph.remove_edges_from(edge_cut)
-  res = prod(map(len, networkx.connected_components(graph)))
+def solve_min_cut(graph):
+    nodes = graph.keys()
+    V = set(nodes[:1])
+    W = set(nodes[1:])
+    while len(W):
+        counts = []
+        for node in W:
+          shared_connections = 0
+          for connected_node in graph[node]:
+            if connected_node in V:
+              shared_connections += 1
+          counts.append((shared_connections, u))
+        if sum([shared_connections for shared_connections, _ in counts]) <= 3:
+            return len(V) * len(W)
+        u = max(counts)[1]
+        V.add(u)
+        W.remove(u)
+    return []
 
-  print(res)
+assert solve_min_cut(graph) == 589036
