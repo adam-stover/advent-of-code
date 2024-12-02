@@ -1,70 +1,49 @@
 import { getLines, ints, cloneObj, filterMap, rangeUnion, has, max, min, minmax, findLastIndex } from '../utils.js';
 
-const URL = './inputs/1.txt';
-
-const things = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'zero'].map(n => n.toString());
-
-const getFirstDigitString = (line) => {
-  for (let i = 0; i < line.length; i++) {
-    for (const thing of things) {
-      if (line.slice(i).startsWith(thing)) {
-        return thing;
-      }
-    }
-  }
-}
-
-const getLastDigitString = (line) => {
-  for (let i = line.length - 1; i >= 0; i--) {
-    for (const thing of things) {
-      if (line.slice(i).startsWith(thing)) {
-        return thing;
-      }
-    }
-  }
-}
-
-const getNumFromWord = word => {
-  switch (word) {
-    case 'one':
-      return 1;
-    case 'two':
-      return 2;
-    case 'three':
-      return 3;
-    case 'four':
-      return 4;
-    case 'five':
-      return 5;
-    case 'six':
-      return 6;
-    case 'seven':
-      return 7;
-    case 'eight':
-      return 8;
-    case 'nine':
-      return 9;
-    case 'zero':
-      return 0;
-  }
-}
+let URL = './inputs/1.txt';
+// URL = './inputs/t.txt';
 
 export async function dayOne() {
   const lines = await getLines(URL);
+  const nums = lines.map(line => ints(line));
+  const len = nums.length;
+
+  const first = {};
+  const second = [];
+
+  // for (let i = 0; i < len; i++) {
+  //   first.push(nums[i][0]);
+  //   second.push(nums[i][1]);
+  // }
+
+  // first.sort((a, b) => a - b);
+  // second.sort((a, b) => a - b);
+
+  // let sum = 0;
+
+  // for (let i = 0; i < len; i++) {
+  //   sum += Math.abs(first[i] - second[i]);
+  // }
+
+  // console.log(sum);
+
+  // part two
+
+  for (let i = 0; i < len; i++) {
+    first[nums[i][0]] = 0;
+  }
+
+  for (let i = 0; i < len; i++) {
+    if (has(first, nums[i][1])) {
+      first[nums[i][1]]++;
+    }
+  }
 
   let sum = 0;
 
-  for (const line of lines) {
-    const firstDigitString = getFirstDigitString(line);
-    const lastDigitString = getLastDigitString(line);
-    const firstDigit = isNaN(Number(firstDigitString))
-      ? getNumFromWord(firstDigitString)
-      : Number(firstDigitString);
-    const lastDigit = isNaN(Number(lastDigitString))
-      ? getNumFromWord(lastDigitString)
-      : Number(lastDigitString);
-
-    sum += Number(`${firstDigit}${lastDigit}`);
+  for (let i = 0; i < len; i++) {
+    const key = nums[i][0];
+    sum += Number(key) * first[key];
   }
 
   console.log(sum);

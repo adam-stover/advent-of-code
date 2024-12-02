@@ -1,4 +1,4 @@
-import { getLines, ints, makeMatrix, cloneMatrix, cloneObj, filterMap, rangeUnion, has, max, min, minmax, findLastIndex } from '../utils.js';
+import { getLines, ints, makeMatrix, cloneMatrix, cloneObj, filterMap, rangeUnion, has, max, min, minmax, findLastIndex } from '../../../utils.js';
 
 const URL = './inputs/5.txt';
 

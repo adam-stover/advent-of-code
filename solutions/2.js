@@ -1,75 +1,75 @@
 import { getLines, ints, cloneObj, filterMap, rangeUnion, has, max, min, minmax, findLastIndex } from '../utils.js';
 
-const URL = './inputs/2.txt';
-
-const NUM_RED = 12;
-const NUM_GREEN = 13;
-const NUM_BLUE = 14;
-
-const COLOR_MAP = {
-  'red': NUM_RED,
-  'green': NUM_GREEN,
-  'blue': NUM_BLUE,
-};
-
-const checkLine = (line) => {
-  const words = line.split('').filter(c => c !== ',' && c !== ';').join('').split(' ').filter(word => word !== '');
-
-  for (const color of Object.keys(COLOR_MAP)) {
-    let index = words.indexOf(color);
-
-    while (index !== -1) {
-      if (Number(words[index - 1]) > COLOR_MAP[color]) {
-        return false;
-      }
-
-      index = words.indexOf(color, index + 1);
-    }
-  }
-
-  return true;
-}
-
-const getCubes = (line) => {
-  const words = line.split('').filter(c => c !== ',' && c !== ';').join('').split(' ').filter(word => word !== '');
-
-  const colorMaxes = [];
-
-  for (const color of Object.keys(COLOR_MAP)) {
-    let index = words.indexOf(color);
-
-    let colorMax = 0;
-
-    while (index !== -1) {
-      if (Number(words[index - 1]) > colorMax) {
-        colorMax = Number(words[index - 1])
-      }
-
-      index = words.indexOf(color, index + 1);
-    }
-
-    colorMaxes.push(colorMax);
-  }
-
-  return colorMaxes[0] * colorMaxes[1] * colorMaxes[2];
-}
+let URL = './inputs/2.txt';
+// URL = './inputs/t.txt';
 
 export async function dayTwo() {
-  const lines = await getLines(URL);
+  const reports = await getLines(URL);
+  const len = reports.length;
 
-  const nums = lines.map(ints);
+  let safeCount = 0;
 
-  let sum = 0;
+  const isSafe = (levels) => {
+    let areWeSafeDaddy = true;
+    const isIncreasing = levels[1] > levels[0];
 
-  for (let i = 0; i < lines.length; i++) {
-    const id = nums[i][0];
+    for (let j = 1; j < levels.length; j++) {
+      const lastLevel = levels[j - 1];
+      const currentLevel = levels[j];
 
-    if (checkLine(lines[i])) sum += Number(id);
+      const currentIncreasing = currentLevel > lastLevel;
+      if (currentIncreasing !== isIncreasing) {
+        areWeSafeDaddy = false;
+        // console.log(`level ${i} is unsafe cuz ascending, cuz ${currentLevel} and ${lastLevel}`)
+        // console.log(currentIncreasing);
+        // console.log(isIncreasing)
+        // console.log(levels);
+        break;
+      }
+
+      const diff = Math.abs(currentLevel - lastLevel)
+
+      if (diff < 1 || diff > 3) {
+        areWeSafeDaddy = false;
+        break;
+      }
+    }
+
+    if (areWeSafeDaddy) {
+      // console.log(`level ${i} is safe`)
+      return true;
+    }
+
+    // console.log(`level ${i} is unsafe`)
+    return false;
   }
 
-  console.log(sum);
+  for (let i = 0; i < len; i++) {
+    const levels = ints(reports[i]);
+    if (isSafe(levels)) {
+      safeCount++;
+    } else {
+      for (let j = 0; j < levels.length; j++) {
+        const nextLevel = copyExcept(levels, j);
+        if (isSafe(nextLevel)) {
+          safeCount++;
+          break;
+        }
+      }
+    }
+  }
 
-  console.log(lines.map(getCubes).reduce((a, b) => a + b, 0));
+  console.log(safeCount);
+}
+
+const copyExcept = (arr, index) => {
+  const newArr = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    if (i !== index) newArr.push(arr[i]);
+  }
+
+  return newArr;
 }
 
 export default dayTwo;
