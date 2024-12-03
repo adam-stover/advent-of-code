@@ -244,6 +244,16 @@ export function findLastIndex(arr, cb) {
   return -1;
 }
 
+export const copyExcept = (arr, index) => {
+  const newArr = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    if (i !== index) newArr.push(arr[i]);
+  }
+
+  return newArr;
+}
+
 export const sum = (arr) => arr.reduce((acc, cur) => acc + cur, 0);
 
 /** Used as references for various `Number` constants. */
