@@ -110,15 +110,15 @@ const validateOpps = (a, b) => {
   return false;
 }
 
-export async function dayThree() {
+export async function dayFour() {
   const lines = await getLines(URL);
 
   const isXmas = (i, j) => {
     if (lines[i][j] !== 'A') return false;
 
-    if (i === 1 && j === 2) {
-      log('here')
-    }
+    // if (i === 1 && j === 2) {
+    //   log('here')
+    // }
 
     const topLeft = lines[i-1][j-1];
     const bottomRight = lines[i+1][j+1];
@@ -146,7 +146,7 @@ export async function dayThree() {
   for (let i = 1; i < lines.length - 1; i++) {
     for (let j = 1; j < lines[0].length - 1; j++) {
       if (isXmas(i, j)) {
-        log(`${i} and ${j}`)
+        // log(`${i} and ${j}`)
         count++;
       }
     }
@@ -157,4 +157,4 @@ export async function dayThree() {
   // 1227 is not right
 }
 
-export default dayThree;
+export default dayFour;

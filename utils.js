@@ -107,6 +107,60 @@ export function cloneMatrix(matrix) {
   return newMatrix;
 }
 
+export function rotateMatrix(matrix) {
+  const rotated = makeMatrix(
+    matrix.length,
+    matrix[0].length,
+    (i, j) => matrix[j][i],
+  );
+
+  return rotated;
+}
+
+export function getMatrixDiags(matrix, limit = 1) {
+  const diagonals = [];
+  const iLen = matrix.length;
+  const jLen = matrix[0].length;
+
+  for (let j = jLen - limit; j >= 0; j--) {
+    const diag = [];
+    for (let k = j; k < jLen; k++) {
+      const i = k - j;
+      diag.push(matrix[i][k]);
+    }
+    diagonals.push(diag);
+  }
+
+  for (let i = 1; i < iLen; i++) {
+    const diag = [];
+    for (let k = i; k < iLen; k++) {
+      const j = k - i;
+      diag.push(matrix[k][j]);
+    }
+    diagonals.push(diag);
+  }
+
+  for (let i = limit - 1; i < iLen; i++) {
+    const diag = [];
+    for (let k = i; k >= 0; k--) {
+      const j = i - k;
+      diag.push(matrix[k][j]);
+    }
+    diagonals.push(diag);
+  }
+
+  for (let j = 1; j <= jLen - limit; j++) {
+    const diag = [];
+    for (let k = j; k < jLen; k++) {
+      const i = iLen - (k - j) - 1;
+      diag.push(matrix[i][k]);
+    }
+    diagonals.push(diag);
+  }
+
+  return diagonals;
+}
+
 export function deepCloneObj(obj) {
   const newObj = {}
 

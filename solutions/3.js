@@ -1,7 +1,7 @@
 import { getLines, ints, cloneObj, filterMap, rangeUnion, has, max, min, minmax, findLastIndex, copyExcept, log } from '../utils.js';
 
 let URL = './inputs/3.txt';
-// URL = './inputs/t.txt';
+URL = './inputs/t.txt';
 
 const helper = (commands) => {
   let sum = 0;
@@ -36,7 +36,7 @@ export async function dayThree() {
   let enabledIndex = 0;
   let disabledIndex = full.indexOf("don't()");
 
-  log(`From ${enabledIndex} to ${disabledIndex}`);
+  // log(`From ${enabledIndex} to ${disabledIndex}`);
 
   let cmds = full.slice(enabledIndex, disabledIndex).match(regex);
 
