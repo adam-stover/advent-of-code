@@ -72,21 +72,20 @@ export async function run() {
     return -1;
   }
 
-  const defrag2 = (actual, map) => {
-    const startJ = (map.length - 1) % 2 === 0 ? map.length - 1 : map.length - 2;
+  const defrag2 = (actual) => {
     let freeIndex = actual.indexOf(FREE);
 
     for (let j = actual.findLastIndex(el => el !== FREE); j > 1; j--) {
       if (actual[j] === FREE) continue;
       const fileId = actual[j];
-      let repeats = 0;
+      let repeats = 1;
 
-      while (actual[j] === fileId) {
+      while (actual[j - 1] === fileId) {
         j--;
         repeats += 1;
       }
-      j += 1;
 
+      freeIndex = actual.indexOf(FREE, freeIndex);
       const replaceIndex = findFreeSpace(actual, repeats, freeIndex, j);
 
       if (replaceIndex !== -1 && replaceIndex < j) {
@@ -100,7 +99,7 @@ export async function run() {
 
   const actual = mapToActual(diskmap);
   // log(actual.join(''));
-  defrag2(actual, diskmap);
+  defrag2(actual);
   // log(actual.join(''))
   const res = hash(actual);
   log(res);

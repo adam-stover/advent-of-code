@@ -310,6 +310,13 @@ export const copyExcept = (arr, index) => {
 
 export const sum = (arr) => arr.reduce((acc, cur) => acc + cur, 0);
 
+// Swap in place
+export const swap = (arr, i, j) => {
+  const temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+};
+
 /** Used as references for various `Number` constants. */
 const INFINITY = 1 / 0;
 /** Built-in value reference. */
