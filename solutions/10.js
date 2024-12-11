@@ -82,7 +82,7 @@ export async function run() {
   const trailheads = getTrailheads();
   let sum = 0;
   for (const trailhead of trailheads) {
-    sum += getScore(trailhead);
+    sum += getRating(trailhead);
   }
   log(sum);
 }
