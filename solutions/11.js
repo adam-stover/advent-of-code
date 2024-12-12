@@ -35,9 +35,7 @@ export async function run() {
 
   const BLINKS = 75;
 
-  console.time('eyo')
   const res = stones.reduce((acc, cur) => acc + memo(cur, BLINKS), 0);
-  console.timeEnd('eyo');
   log(res);
 }
 
