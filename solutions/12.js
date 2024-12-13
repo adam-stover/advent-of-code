@@ -57,10 +57,12 @@ export async function run() {
   // side = ${dir}-${i}-${startj}
 
   const bfs2 = (startI, startJ) => {
-    if (visited[startI][startJ]) return [0, 0];
+    if (visited[startI][startJ]) return 0;
 
     const queue = [[startI, startJ]];
     const val = lines[startI][startJ];
+    // fences[0] is fences[NORTH], etc.
+    // fences[0][1][2] means that this region has a north-facing fence at row 1 column 2
     const fences = [{}, {}, {}, {}];
     let area = 0;
     let sides = 0;
@@ -99,7 +101,7 @@ export async function run() {
 
     for (const fenceMapInOneDirection of fences) {
       for (const line of Object.values(fenceMapInOneDirection)) {
-        line.sort((a, b) => a -b);
+        line.sort((a, b) => a - b);
         let lastNum = line[0];
         let numSides = 1;
 
@@ -108,29 +110,26 @@ export async function run() {
           lastNum = line[i];
         }
 
-        sides += numSides;``
+        sides += numSides;
       }
     }
 
-    return [area, sides];
+    return area * sides;
   }
 
+  console.time('eyo');
   let res = 0;
 
   for (let i = 0; i < iLen; i++) {
     for (let j = 0; j < jLen; j++) {
-      const [area, sides] = bfs2(i, j);
-      const amt = area * sides;
-      // if (amt) {
-      //   log(`val ${lines[i][j]} at ${i}-${j} totals ${area} * ${sides} = ${amt}`);
-      // }
+      const amt = bfs2(i, j);
       res += amt;
     }
   }
 
-  log(res);
+  console.timeEnd('eyo');
 
-  // 6068584 is not right
+  log(res);
 }
 
 export default run;
