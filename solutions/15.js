@@ -12,6 +12,9 @@ const BOX = 'O';
 const ROBOT = '@';
 const WALL = '#';
 const AIR = '.';
+const LEFT_BOX = '[';
+const RIGHT_BOX = ']';
+const BOXES = [LEFT_BOX, RIGHT_BOX];
 
 const UP = '^';
 const DOWN = 'v';
@@ -26,8 +29,24 @@ const prep = (lines) => {
   for (let i = 0; i < lines.length; i++) {
     if (lines[i] === '') finishedWithMap = true;
     else if (!finishedWithMap) {
-      const line = lines[i].split('');
-      map.push(line);
+      const row = [];
+      for (let j = 0; j < lines[i].length; j++) {
+        const char = lines[i][j];
+        if (char === WALL) {
+          row.push(WALL);
+          row.push(WALL);
+        } else if (char === BOX) {
+          row.push(LEFT_BOX);
+          row.push(RIGHT_BOX);
+        } else if (char === AIR) {
+          row.push(AIR);
+          row.push(AIR);
+        } else if (char === ROBOT) {
+          row.push(ROBOT);
+          row.push(AIR);
+        }
+      }
+      map.push(row);
     } else instructions.push(lines[i]);
   }
 
@@ -43,6 +62,8 @@ const getRobot = (map) => {
   }
 }
 
+const isBox = (el) => BOXES.includes(el);
+
 export async function run() {
   const lines = await getLines(URL);
 
@@ -51,27 +72,70 @@ export async function run() {
 
   let [i, j] = [startI, startJ];
 
-  const moveUp = () => {
-    let tempI = i - 1;
-    while (map[tempI][j] === BOX) {
-      tempI--;
+  const moveUpHelp = (i, j) => {
+    if (map[i - 1][j] === AIR) {
+      return true;
     }
-    if (map[tempI][j] === AIR) {
-      map[tempI][j] = map[i - 1][j];
-      map[i - 1][j] = ROBOT;
+    if (map[i - 1][j] === WALL) {
+      return false;
+    }
+    if (map[i - 1][j] === LEFT_BOX) {
+      return moveUpHelp(i - 1, j) && moveUpHelp(i - 1, j + 1);
+    }
+    return moveUpHelp(i - 1, j) && moveUpHelp(i - 1, j - 1);
+  }
+
+  const moveUpRecursive = (i, j) => {
+    if (map[i - 1][j] === WALL) return;
+    if (map[i - 1][j] === LEFT_BOX) {
+      moveUpRecursive(i - 1, j);
+      moveUpRecursive(i - 1, j + 1);
+    } else if (map[i - 1][j] === RIGHT_BOX) {
+      moveUpRecursive(i - 1, j);
+      moveUpRecursive(i - 1, j - 1);
+    }
+    // log(`moving ${map[i][j]} into ${map[i - 1][j]} at ${i}, ${j}`)
+    map[i - 1][j] = map[i][j];
+    map[i][j] = AIR;
+  }
+
+  const moveUp = () => {
+    if (moveUpHelp(i, j)) {
+      moveUpRecursive(i, j);
       map[i][j] = AIR;
       i--;
     }
   }
 
-  const moveDown = () => {
-    let tempI = i + 1;
-    while (map[tempI][j] === BOX) {
-      tempI++;
+  const moveDownHelp = (i, j) => {
+    if (map[i + 1][j] === AIR) {
+      return true;
     }
-    if (map[tempI][j] === AIR) {
-      map[tempI][j] = map[i + 1][j];
-      map[i + 1][j] = ROBOT;
+    if (map[i + 1][j] === WALL) {
+      return false;
+    }
+    if (map[i + 1][j] === LEFT_BOX) {
+      return moveDownHelp(i + 1, j) && moveDownHelp(i + 1, j + 1);
+    }
+    return moveDownHelp(i + 1, j) && moveDownHelp(i + 1, j - 1);
+  }
+
+  const moveDownRecursive = (i, j) => {
+    if (map[i + 1][j] === WALL) return;
+    if (map[i + 1][j] === LEFT_BOX) {
+      moveDownRecursive(i + 1, j);
+      moveDownRecursive(i + 1, j + 1);
+    } else if (map[i + 1][j] === RIGHT_BOX) {
+      moveDownRecursive(i + 1, j);
+      moveDownRecursive(i + 1, j - 1);
+    }
+    map[i + 1][j] = map[i][j];
+    map[i][j] = AIR;
+  }
+
+  const moveDown = () => {
+    if (moveDownHelp(i, j)) {
+      moveDownRecursive(i, j);
       map[i][j] = AIR;
       i++;
     }
@@ -79,12 +143,14 @@ export async function run() {
 
   const moveLeft = () => {
     let tempJ = j - 1;
-    while (map[i][tempJ] === BOX) {
+    while (isBox(map[i][tempJ])) {
       tempJ--;
     }
     if (map[i][tempJ] === AIR) {
-      map[i][tempJ] = map[i][j - 1];
-      map[i][j - 1] = ROBOT;
+      while (tempJ < j) {
+        map[i][tempJ] = map[i][tempJ + 1];
+        tempJ++;
+      }
       map[i][j] = AIR;
       j--;
     }
@@ -92,12 +158,14 @@ export async function run() {
 
   const moveRight = () => {
     let tempJ = j + 1;
-    while (map[i][tempJ] === BOX) {
+    while (isBox(map[i][tempJ])) {
       tempJ++;
     }
     if (map[i][tempJ] === AIR) {
-      map[i][tempJ] = map[i][j + 1];
-      map[i][j + 1] = ROBOT;
+      while (tempJ > j) {
+        map[i][tempJ] = map[i][tempJ - 1];
+        tempJ--;
+      }
       map[i][j] = AIR;
       j++
     }
@@ -112,21 +180,25 @@ export async function run() {
 
   for (let m = 0; m < instructions.length; m++) {
     move(instructions[m]);
+    // log(instructions[m])
+    // for (const row of map) {
+    //   log(row.join(''))
+    // }
   }
 
   let sum = 0;
 
   for (let i = 1; i < map.length; i++) {
     for (let j = 1; j < map[0].length; j++) {
-      if (map[i][j] === BOX) {
+      if (map[i][j] === LEFT_BOX) {
         sum += 100 * i + j;
       }
     }
   }
 
-  for (const row of map) {
-    log(row.join(''))
-  }
+  // for (const row of map) {
+  //   log(row.join(''))
+  // }
   log(sum);
 }
 
