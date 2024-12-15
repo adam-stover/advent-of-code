@@ -3,10 +3,6 @@ import { getLines, ints, filterMap, has, max, min, copyExcept, makeMatrix, log }
 let URL = './inputs/14.txt';
 // URL = './inputs/t.txt';
 
-const helper = (a, b, c) => {
-  return false;
-};
-
 const AIR = '.';
 let HEIGHT = 103;
 let WIDTH = 101;
