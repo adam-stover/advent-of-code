@@ -102,7 +102,6 @@ export async function run() {
   const moveUp = () => {
     if (moveUpHelp(i, j)) {
       moveUpRecursive(i, j);
-      map[i][j] = AIR;
       i--;
     }
   }
@@ -136,7 +135,6 @@ export async function run() {
   const moveDown = () => {
     if (moveDownHelp(i, j)) {
       moveDownRecursive(i, j);
-      map[i][j] = AIR;
       i++;
     }
   }
@@ -178,6 +176,7 @@ export async function run() {
     else if (dir === LEFT) moveLeft();
   }
 
+  console.time('eyo');
   for (let m = 0; m < instructions.length; m++) {
     move(instructions[m]);
     // log(instructions[m])
@@ -195,6 +194,8 @@ export async function run() {
       }
     }
   }
+
+  console.timeEnd('eyo');
 
   // for (const row of map) {
   //   log(row.join(''))
