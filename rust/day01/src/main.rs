@@ -1,16 +1,17 @@
 use std::collections::HashSet;
 
-const INPUT_TEXT: &str = include_str!("../../inputs/1.txt");
+const INPUT_TEXT: &str = include_str!("../../../inputs/1.txt");
+const CAPACITY: usize = 1000;
 
 fn main() {
-    let mut first: Vec<usize> = Vec::new();
-    let mut second: Vec<usize> = Vec::new();
-    let mut sum: usize = 0;
-    let mut sum_2: usize = 0;
-    let mut hash: HashSet<usize> = HashSet::new();
+    let mut first: Vec<u64> = Vec::with_capacity(CAPACITY);
+    let mut second: Vec<u64> = Vec::with_capacity(CAPACITY);
+    let mut sum: u64 = 0;
+    let mut sum_2: u64 = 0;
+    let mut hash: HashSet<u64> = HashSet::with_capacity(CAPACITY);
 
     for line in INPUT_TEXT.lines() {
-        let mut iter = line.split_whitespace().map(|x| x.parse::<usize>().unwrap());
+        let mut iter = line.split_whitespace().map(|x| x.parse::<u64>().unwrap());
         let first_val = iter.next().unwrap();
         let second_val = iter.next().unwrap();
         first.push(first_val);
@@ -22,7 +23,7 @@ fn main() {
     second.sort();
 
     for (i, a) in first.iter().enumerate() {
-        let b: &usize = &second[i];
+        let b: &u64 = &second[i];
 
         sum += if a > b { a - b } else { b - a };
     }
