@@ -1,134 +1,20 @@
-use std::collections::VecDeque;
-
 const INPUT_TEXT: &str = include_str!("../../../inputs/20.txt");
 
-const DIRS: [(i32, i32); 4] = [(-1, 0), (0, 1), (1, 0), (0, -1)];
+#[derive(PartialEq, Copy, Clone)]
+enum Direction {
+    North,
+    East,
+    South,
+    West,
+}
+
+const DIRS: [Direction; 4] = [Direction::North, Direction::East, Direction::South, Direction::West];
+const DIR_MOVES: [(i32, i32); 4] = [(0, -1), (1, 0), (0, 1), (-1, 0)];
 const START: u8 = b'S';
 const END: u8 = b'E';
 const WALL: u8 = b'#';
 const CHEAT_TIME: i32 = 20;
 const TIME_SAVE_THRESHOLD: i32 = 100;
-
-struct State {
-    x: i32,
-    y: i32,
-    time: i32
-}
-
-struct StateWithPath {
-    x: i32,
-    y: i32,
-    time: i32,
-    path: String
-}
-
-fn bfs(
-    grid: &[u8],
-    height: i32,
-    width: i32,
-    start: (i32, i32),
-    end: (i32, i32)
-) -> (i32, String) {
-    let mut queue: VecDeque<StateWithPath> = VecDeque::new();
-    let mut seen = vec![false; height as usize * width as usize];
-
-    let initial_state = StateWithPath {
-        x: start.0,
-        y: start.1,
-        time: 0,
-        path: String::from("")
-    };
-
-    queue.push_back(initial_state);
-
-    while let Some(StateWithPath {
-        x,
-        y,
-        time,
-        path
-    }) = queue.pop_front() {
-        if x == end.0 && y == end.1 {
-            return (time, path);
-        }
-
-        if seen[y as usize * width as usize + x as usize] {
-            continue;
-        }
-
-        seen[y as usize * width as usize + x as usize] = true;
-
-        for (dx, dy) in DIRS.iter() {
-            let newy = y + dy;
-            let newx = x + dx;
-            if newy >= 0 && newy < height && newx >= 0 && newx < width && grid[newy as usize * width as usize + newx as usize] != WALL {
-                let mut new_path = path.clone();
-                new_path.push_str("|");
-                new_path.push_str(&x.to_string());
-                new_path.push_str("-");
-                new_path.push_str(&y.to_string());
-                queue.push_back(StateWithPath {
-                    x: newx,
-                    y: newy,
-                    time: time + 1,
-                    path: new_path
-                })
-            }
-        }
-    }
-
-    return (0, String::from(""));
-}
-
-fn bfs2(
-    grid: &[u8],
-    height: i32,
-    width: i32,
-    start: (i32, i32),
-    end: (i32, i32),
-    start_time: i32,
-    target: i32
-) -> bool {
-    let mut queue: VecDeque<State> = VecDeque::new();
-    let mut seen = vec![false; height as usize * width as usize];
-
-    let initial_state = State {
-        x: start.0,
-        y: start.1,
-        time: start_time
-    };
-
-    queue.push_back(initial_state);
-
-    while let Some(State {
-        x,
-        y,
-        time
-    }) = queue.pop_front() {
-        if time > target || seen[y as usize * width as usize + x as usize] {
-            continue;
-        }
-
-        if x == end.0 && y == end.1 {
-            return true;
-        }
-
-        seen[y as usize * width as usize + x as usize] = true;
-
-        for (dx, dy) in DIRS.iter() {
-            let newy = y + dy;
-            let newx = x + dx;
-            if newy >= 0 && newy < height && newx >= 0 && newx < width && grid[newy as usize * width as usize + newx as usize] != WALL {
-                queue.push_back(State {
-                    x: newx,
-                    y: newy,
-                    time: time + 1
-                })
-            }
-        }
-    }
-
-    return false;
-}
 
 fn manhattan_distance(a: (i32, i32), b: (i32, i32)) -> i32 {
     let x = (a.0 - b.0).abs();
@@ -164,38 +50,41 @@ fn main() {
         }
     }
 
-    let (best_time, best_path) = bfs(&grid, height as i32, width as i32, start, end);
-    let target = best_time - TIME_SAVE_THRESHOLD;
+    let mut path: Vec<(i32, i32)> = Vec::new();
 
-    println!("best time: {}; target: {}", best_time, target);
-
-    let locations = best_path
-        .split("|")
-        .filter(|x| x.len() > 0)
-        .map(|str| str.split("-").map(|x| x.parse::<i32>().unwrap()));
-
+    let mut cur = start.clone();
+    // let mut dist = 0;
+    let mut cur_dir = Direction::South;
     let mut total = 0;
 
-    for (index, mut loc) in locations.enumerate() {
-        let startx = loc.next().unwrap();
-        let starty = loc.next().unwrap();
-
-        for y in 0..height {
-            for x in 0..width {
-                let man_dist = manhattan_distance((startx, starty), (x as i32, y as i32));
-
-                if man_dist <= CHEAT_TIME && grid[y * width + x] != WALL {
-                    let success = bfs2(&grid, height as i32, width as i32, (x as i32, y as i32), end, index as i32 + man_dist, target);
-                    if success {
-                        // println!("We cheated from {},{} to {},{} at {}", startx, starty, x, y, index);
-                        total += 1;
-                    }
-                }
+    while cur != end {
+        path.push((cur.0, cur.1));
+        // dist += 1;
+        for dir in DIRS {
+            let (movex, movey) = DIR_MOVES[dir as usize];
+            let newx = cur.0 + movex;
+            let newy = cur.1 + movey;
+            if dir != DIRS[(cur_dir as usize + 2) % 4] && grid[newy as usize * width + newx as usize] != WALL {
+                cur = (newx, newy);
+                cur_dir = dir;
+                break;
             }
         }
+    }
 
-        if index % 100 == 0 {
-            println!("processing {} for total of {}", index, total);
+    path.push((cur.0, cur.1));
+
+    println!("Total time: {}", path.len());
+
+    for (i, (source_x, source_y)) in path.iter().enumerate() {
+        // OK, now we want to go through all the items in the path
+        for j in (i + TIME_SAVE_THRESHOLD as usize)..path.len() {
+            let (dest_x, dest_y) = path[j];
+            // If we're within CHEAT_TIME manhattan distance, we good
+            let man_dist = manhattan_distance((*source_x, *source_y), (dest_x, dest_y));
+            if man_dist <= CHEAT_TIME && j as i32 - (i as i32 + man_dist) >= TIME_SAVE_THRESHOLD {
+                total += 1;
+            }
         }
     }
 
