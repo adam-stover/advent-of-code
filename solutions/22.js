@@ -1,4 +1,4 @@
-import { getLines, ints, filterMap, has, max, min, copyExcept, makeMatrix, log } from '../utils.js';
+import { getLines, ints, filterMap, has, max, min, copyExcept, makeMatrix, log, diff, intersection } from '../utils.js';
 
 let URL = './inputs/22.txt';
 // URL = './inputs/t.txt';
@@ -32,25 +32,60 @@ export async function run() {
     return next;
   }
 
-  const thing = (secret) => {
-    let res = secret;
+  const secretSequences = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const sequence = [ints(lines[i])[0]];
     for (let i = 0; i < NUM_SECRETS; i++) {
-        res = getNext(res);
+        const last = sequence[sequence.length - 1];
+        sequence.push(getNext(last));
     }
-    return res;
+    secretSequences.push(sequence);
   }
 
-//   const sequences = [];
+  const priceSequences = [];
 
-//   for (let i = 0; )
+  for (const sequence of secretSequences) {
+    const prices = [];
+    for (const secret of sequence) {
+        const price = secret % 10;
+        prices.push(price);
+    }
+    priceSequences.push(prices);
+  }
 
-  const res = lines.reduce((acc, cur) => {
-    const secret = thing(ints(cur)[0]);
-    log(secret);
-    return acc + secret;
-  }, 0);
+  const changeSequences = priceSequences.map(diff);
+  log(changeSequences[0].length)
 
-  log(res);
+
+  const allChanges = {};
+
+  for (let i = 0; i < changeSequences.length; i++) {
+    const changeSequence = changeSequences[i];
+    const priceSequence = priceSequences[i];
+
+    const set = new Set();
+
+    for (let j = 4; j <= changeSequence.length; j++) {
+        const price = priceSequence[j];
+        const str = changeSequence.slice(j - 4, j).join('');
+        if (!set.has(str)) {
+            if (!has(allChanges, str)) {
+                allChanges[str] = price;
+            } else {
+                allChanges[str] += price;
+            }
+            set.add(str);
+        }
+    }
+  }
+
+  const best = max(Object.values(allChanges));
+
+  log(best);
+
+  // 1909 is not right
+  // 2077 is too high
 }
 
 export default run;

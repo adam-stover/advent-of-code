@@ -213,6 +213,18 @@ export function rangeUnion(ranges) {
   return union;
 }
 
+export function intersection(a, ...b) {
+  const res = new Set();
+
+  for (const key of a.keys()) {
+    if (b.every(set => set.has(key))) {
+      res.add(key);
+    }
+  }
+
+  return res;
+}
+
 export function has(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
