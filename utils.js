@@ -267,7 +267,7 @@ export function min(arr, cb) {
   const transform = cb ? cb : x => x;
   return arr.reduce((acc, cur) => {
     const val = transform(cur);
-    const accVal = transform(acc);
+    const accVal = acc;
     return accVal < val ? acc : cur;
   }, Infinity);
 }

@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 const INPUT_TEXT: &str = include_str!("../../../inputs/20.txt");
 
 #[derive(PartialEq, Copy, Clone)]
@@ -24,6 +26,7 @@ fn manhattan_distance(a: (i32, i32), b: (i32, i32)) -> i32 {
 }
 
 fn main() {
+    let before = Instant::now();
     let lines = INPUT_TEXT
         .lines()
         .collect::<Vec<_>>();
@@ -52,14 +55,12 @@ fn main() {
 
     let mut path: Vec<(i32, i32)> = Vec::new();
 
-    let mut cur = start.clone();
-    // let mut dist = 0;
+    let mut cur = start;
     let mut cur_dir = Direction::South;
     let mut total = 0;
 
     while cur != end {
         path.push((cur.0, cur.1));
-        // dist += 1;
         for dir in DIRS {
             let (movex, movey) = DIR_MOVES[dir as usize];
             let newx = cur.0 + movex;
@@ -74,19 +75,20 @@ fn main() {
 
     path.push((cur.0, cur.1));
 
-    println!("Total time: {}", path.len());
+    // println!("Total time: {}", path.len());
 
-    for (i, (source_x, source_y)) in path.iter().enumerate() {
+    for i in 0..(path.len() - TIME_SAVE_THRESHOLD as usize) {
+        let (source_x, source_y) = path[i];
         // OK, now we want to go through all the items in the path
         for j in (i + TIME_SAVE_THRESHOLD as usize)..path.len() {
             let (dest_x, dest_y) = path[j];
             // If we're within CHEAT_TIME manhattan distance, we good
-            let man_dist = manhattan_distance((*source_x, *source_y), (dest_x, dest_y));
+            let man_dist = manhattan_distance((source_x, source_y), (dest_x, dest_y));
             if man_dist <= CHEAT_TIME && j as i32 - (i as i32 + man_dist) >= TIME_SAVE_THRESHOLD {
                 total += 1;
             }
         }
     }
 
-    println!("{}", total);
+    println!("{} in {:.2?}", total, before.elapsed());
 }
