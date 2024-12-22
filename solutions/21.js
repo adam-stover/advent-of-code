@@ -171,31 +171,31 @@ export async function run() {
   const true_origin = [3, 2];
 
   const processLine = (line) => {
-  let steps = 0;
+    let steps = 0;
 
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-    const target = NUM_COORD_MAP[char];
-    const paths = bfsNumeric(true_origin, target)
-    paths.forEach(p => {p.push(A)});
-    const best = paths.reduce((acc, p) => {
-      let total_cost = 0;
-      let o = A;
-      for (const op of p) {
-        const cost = o === op ? 1 : answers[answers.length - 1][o][op];
-        total_cost += cost;
-        o = op;
-      }
-      return total_cost < acc ? total_cost : acc;
-    }, Infinity);
-    steps += best;
-    true_origin[0] = target[0];
-    true_origin[1] = target[1];
-  }
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        const target = NUM_COORD_MAP[char];
+        const paths = bfsNumeric(true_origin, target)
+        paths.forEach(p => {p.push(A)});
+        const best = paths.reduce((acc, p) => {
+        let total_cost = 0;
+        let o = A;
+        for (const op of p) {
+            const cost = o === op ? 1 : answers[answers.length - 1][o][op];
+            total_cost += cost;
+            o = op;
+        }
+        return total_cost < acc ? total_cost : acc;
+        }, Infinity);
+        steps += best;
+        true_origin[0] = target[0];
+        true_origin[1] = target[1];
+    }
 
-  log(steps);
+    log(steps);
 
-  return steps;
+    return steps;
   }
 
   let total = 0;
