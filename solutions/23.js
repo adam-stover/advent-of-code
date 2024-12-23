@@ -89,15 +89,41 @@ export async function run() {
     return required;
   }
 
+  const doThing = (startingNode) => {
+    const seen = new Set();
+    const queue = [startingNode];
+
+    while (queue.length) {
+      const node = queue.pop();
+      if (seen.has(node)) continue;
+      const nextNodes = edges[node];
+      if (nextNodes.isSupersetOf(seen)) {
+        seen.add(node);
+        queue.push(...nextNodes);
+      }
+    }
+
+    return [...seen];
+  }
+
   let best = [];
 
   for (const key of nodes.keys()) {
-    const cur = memo(key);
-    log(`${key} gives us ${cur}`)
-    if (cur.length > best.length) best = cur;
+    const group = doThing(key);
+    if (group.length > best.length) best = group;
   }
 
   log(best.sort((a, b) => a.localeCompare(b)).join(','));
+
+  // let best = [];
+
+  // for (const key of nodes.keys()) {
+  //   const cur = memo(key);
+  //   log(`${key} gives us ${cur}`)
+  //   if (cur.length > best.length) best = cur;
+  // }
+
+  // log(best.sort((a, b) => a.localeCompare(b)).join(','));
 
 //   const groups = getGroups(nodes);
 //   log(groups.size);
