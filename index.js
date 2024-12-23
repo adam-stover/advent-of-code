@@ -20,7 +20,7 @@ import dayNineteen from './solutions/19.js';
 import dayTwenty from './solutions/20.js';
 import dayTwentyOne from './solutions/21.js';
 import dayTwentyTwo from './solutions/22.js';
-// import dayTwentyThree from './solutions/23.js';
+import dayTwentyThree from './solutions/23.js';
 // import dayTwentyFour from './solutions/24.js';
 // import dayTwentyFive from './solutions/25.js';
 
@@ -45,7 +45,7 @@ import dayTwentyTwo from './solutions/22.js';
 // dayNineteen();
 // dayTwenty();
 // dayTwentyOne();
-dayTwentyTwo();
-// dayTwentyThree();
+// dayTwentyTwo();
+dayTwentyThree();
 // dayTwentyFour();
 // dayTwentyFive();
