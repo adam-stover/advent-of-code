@@ -1,14 +1,14 @@
 import { getLines, ints, filterMap, has, max, min, copyExcept, makeMatrix, log } from '../utils.js';
 
 let URL = './inputs/23.txt';
-// URL = './inputs/t.txt';
+URL = './inputs/t.txt';
 
 export async function run() {
   const lines = await getLines(URL);
 
   console.time('eyo');
+
   const nodes = new Set();
-  const tNodes = new Set();
   const edges = {};
 
   for (let i = 0; i < lines.length; i++) {
@@ -19,8 +19,6 @@ export async function run() {
     if (!has(edges, b)) edges[b] = new Set();
     edges[a].add(b);
     edges[b].add(a);
-    if (a.startsWith('t')) tNodes.add(a);
-    if (b.startsWith('t')) tNodes.add(b);
   }
 
   const lehNodes = new Map();
@@ -54,13 +52,10 @@ export async function run() {
     const queue = [startingNode];
 
     while (queue.length) {
-      const node = queue.pop();
-      if (!seen.has(node) && edges[node].isSupersetOf)
-      if (seen.has(node)) continue;
-      const nextNodes = edges[node];
-      if (nextNodes.isSupersetOf(seen)) {
+      const node = queue.shift();
+      if (!seen.has(node) && edges[node].isSupersetOf(seen)) {
         seen.add(node);
-        queue.push(...nextNodes);
+        queue.push(...edges[node]);
       }
     }
 
