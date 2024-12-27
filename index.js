@@ -22,7 +22,7 @@ import dayTwentyOne from './solutions/21.js';
 import dayTwentyTwo from './solutions/22.js';
 import dayTwentyThree from './solutions/23.js';
 import dayTwentyFour from './solutions/24.js';
-// import dayTwentyFive from './solutions/25.js';
+import dayTwentyFive from './solutions/25.js';
 
 // dayOne();
 // dayTwo();
@@ -47,5 +47,5 @@ import dayTwentyFour from './solutions/24.js';
 // dayTwentyOne();
 // dayTwentyTwo();
 // dayTwentyThree();
-dayTwentyFour();
-// dayTwentyFive();
+// dayTwentyFour();
+dayTwentyFive();

@@ -1,12 +1,10 @@
 import { getLines, ints, filterMap, has, max, min, copyExcept, makeMatrix, log } from '../utils.js';
 
 let URL = './inputs/23.txt';
-URL = './inputs/t.txt';
+// URL = './inputs/t.txt';
 
 export async function run() {
   const lines = await getLines(URL);
-
-  console.time('eyo');
 
   const nodes = new Set();
   const edges = {};
@@ -64,17 +62,15 @@ export async function run() {
 
   let best = [];
 
-  // for (const [key, node] of lehNodes.entries()) {
-  //   const reqs = getGroupsRecurse(node);
-  //   if (reqs.length > best.length) best = reqs;
-  // }
-
-  for (const key of nodes.keys()) {
-    const group = getGroups(key);
-    if (group.length > best.length) best = group;
+  for (const [key, node] of lehNodes.entries()) {
+    const reqs = getGroupsRecurse(node);
+    if (reqs.length > best.length) best = reqs;
   }
 
-  console.timeEnd('eyo');
+  // for (const key of nodes.keys()) {
+  //   const group = getGroups(key);
+  //   if (group.length > best.length) best = group;
+  // }
 
   log(best.sort((a, b) => a.localeCompare(b)).join(','));
 }
