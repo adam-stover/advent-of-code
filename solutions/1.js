@@ -1,52 +1,50 @@
-import { getLines, ints, cloneObj, filterMap, rangeUnion, has, max, min, minmax, findLastIndex } from '../utils.js';
+import { getLines, ints, filterMap, has, max, min, copyExcept, makeMatrix, log } from '../utils.js';
 
 let URL = './inputs/1.txt';
 // URL = './inputs/t.txt';
 
-export async function dayOne() {
+const helper = (startingPosition, direction, number) => {
+  const realTurn = number % 100;
+  if (direction === 'R') return (startingPosition + realTurn) % 100;
+  return (100 + startingPosition - realTurn) % 100;
+};
+
+export async function run() {
   const lines = await getLines(URL);
-  const nums = lines.map(line => ints(line));
-  const len = nums.length;
 
-  const first = {};
-  const second = [];
+  const START = 50;
+  let pos = START;
+  let count = 0;
+  let clicks = 0;
 
-  // for (let i = 0; i < len; i++) {
-  //   first.push(nums[i][0]);
-  //   second.push(nums[i][1]);
-  // }
+  for (let i = 0; i < lines.length - 1; i++) {
+    const line = lines[i];
+    const num = ints(line);
 
-  // first.sort((a, b) => a - b);
-  // second.sort((a, b) => a - b);
+    const dir = line[0];
 
-  // let sum = 0;
-
-  // for (let i = 0; i < len; i++) {
-  //   sum += Math.abs(first[i] - second[i]);
-  // }
-
-  // console.log(sum);
-
-  // part two
-
-  for (let i = 0; i < len; i++) {
-    first[nums[i][0]] = 0;
-  }
-
-  for (let i = 0; i < len; i++) {
-    if (has(first, nums[i][1])) {
-      first[nums[i][1]]++;
+    const prevPos = pos;
+    clicks += Math.floor(num / 100)
+    const realTurn = num % 100;
+    if (dir === 'R') {
+      if (pos + realTurn >= 100) clicks += 1;
+      pos = (pos + realTurn) % 100;
+    } else {
+      if (realTurn >= pos && pos !== 0) clicks += 1;
+      pos = (100 + pos - realTurn) % 100;
     }
+
+    // pos = helper(pos, dir, num)
+    // console.log(`after ${line} we get to ${pos}`);
+    // console.log(`after ${line} we have ${clicks} after moving from ${prevPos} to ${pos}`)
+    if (pos === 0) count += 1;
   }
 
-  let sum = 0;
-
-  for (let i = 0; i < len; i++) {
-    const key = nums[i][0];
-    sum += Number(key) * first[key];
-  }
-
-  console.log(sum);
+  log(count);
+  log(clicks);
 }
 
-export default dayOne;
+export default run;
+
+// not 7025
+// 
