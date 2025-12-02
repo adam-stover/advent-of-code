@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 export async function getLines(url) {
   const data = await readFile(url, 'utf-8');
   const lines = data.split('\n');
-  return lines;
+  return lines.slice(0, -1);
 }
 
 export function log(...args) {

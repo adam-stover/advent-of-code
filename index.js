@@ -1,5 +1,5 @@
 import dayOne from './solutions/1.js';
-// import dayTwo from './solutions/2.js';
+import dayTwo from './solutions/2.js';
 // import dayThree from './solutions/3.js';
 // import dayFour from './solutions/4.js';
 // import dayFive from './solutions/5.js';
@@ -24,8 +24,8 @@ import dayOne from './solutions/1.js';
 // import dayTwentyFour from './solutions/24.js';
 // import dayTwentyFive from './solutions/25.js';
 
-dayOne();
-// dayTwo();
+// dayOne();
+dayTwo();
 // dayThree();
 // dayFour();
 // dayFive();
