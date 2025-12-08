@@ -398,9 +398,13 @@ export const hexToDec = (hex) => {
 }
 
 class Heap {
-  constructor(comparator) {
-    this.heap = [];
+  constructor(comparator, heap = []) {
     this.comparator = comparator;
+    this.heap = heap;
+
+    for (let i = Math.floor(this.size / 2) - 1; i >= 0; i--) {
+      this.siftDownPerformanceOptimized(i);
+    }
   }
 
   // Helper Methods
@@ -452,7 +456,7 @@ class Heap {
 
   // Removing an element will remove the
   // top element with highest priority then
-  // heapifyDown will be called
+  // siftDown will be called
   remove() {
       if (this.size === 0) {
           return null;
@@ -460,13 +464,17 @@ class Heap {
       const item = this.heap[0];
       this.heap[0] = this.heap[this.size - 1];
       this.heap.pop();
-      this.heapifyDown();
+      this.siftDown();
       return item;
+  }
+
+  pop() {
+      return this.remove();
   }
 
   add(item) {
       this.heap.push(item);
-      this.heapifyUp();
+      this.siftUp();
   }
 
   printHeap() {
@@ -475,65 +483,95 @@ class Heap {
         heap += ` ${this.heap[i]} `;
     }
     console.log(heap);
-}
+  }
+
+  siftUp() {
+    let index = this.size - 1;
+    while (this.hasParent(index) && !this.isCorrectOrder(this.parent(index), this.heap[index])) {
+        this.swap(this.getParentIndex(index), index);
+        index = this.getParentIndex(index);
+    }
+  }
+
+  siftDown(index = 0) {
+    while (this.hasLeftChild(index)) {
+      let childIndexToSwap = this.getLeftChildIndex(index);
+      if (this.hasRightChild(index) && !this.isCorrectOrder(this.leftChild(index), this.rightChild(index))) {
+          childIndexToSwap = this.getRightChildIndex(index);
+      }
+
+      if (this.isCorrectOrder(this.heap[index], this.heap[childIndexToSwap])) {
+          break;
+      } else {
+          this.swap(index, childIndexToSwap);
+      }
+      index = childIndexToSwap;
+    }
+  }
 }
 
 export class MinHeap extends Heap {
-  constructor(comparator) {
-    super(comparator);
+  constructor(...args) {
+    super(...args);
   }
 
-  heapifyUp() {
-      let index = this.size - 1;
-      while (this.hasParent(index) && this.comparator(this.parent(index)) > this.comparator(this.heap[index])) {
-          this.swap(this.getParentIndex(index), index);
-          index = this.getParentIndex(index);
-      }
+  isCorrectOrder(a, b) {
+    return this.comparator(a) <= this.comparator(b);
   }
 
-  heapifyDown() {
-      let index = 0;
-      while (this.hasLeftChild(index)) {
-          let smallerChildIndex = this.getLeftChildIndex(index);
-          if (this.hasRightChild(index) && this.comparator(this.rightChild(index)) < this.comparator(this.leftChild(index))) {
-              smallerChildIndex = this.getRightChildIndex(index);
-          }
-          if (this.comparator(this.heap[index]) < this.comparator(this.heap[smallerChildIndex])) {
-              break;
-          } else {
-              this.swap(index, smallerChildIndex);
-          }
-          index = smallerChildIndex;
+  siftDownPerformanceOptimized(index = 0) {
+    const size = this.size;
+
+    let leftChildIndex = 2 * index + 1;
+    while (leftChildIndex < size) {
+      let leftChildVal = this.comparator(this.heap[leftChildIndex]);
+      const rightChildIndex = 2 * index + 2;
+      if (rightChildIndex < 2) {
+        const rightChildVal = this.comparator(this.heap[rightChildIndex]);
+        if (rightChildVal > leftChildVal) {
+          leftChildIndex = rightChildIndex;
+          leftChildVal = rightChildVal;
+        }
       }
+
+      if (this.comparator(this.heap[index]) <= leftChildVal) break;
+
+      this.swap(index, leftChildIndex);
+      index = leftChildIndex;
+      leftChildIndex = 2 * index + 1;
+    }
   }
 }
 
 export class MaxHeap extends Heap {
-  constructor(comparator) {
-    super(comparator);
+  constructor(...args) {
+    super(...args);
   }
 
-  heapifyUp() {
-      let index = this.heap.length - 1;
-      while (this.hasParent(index) && this.comparator(this.parent(index)) < this.comparator(this.heap[index])) {
-          this.swap(this.getParentIndex(index), index);
-          index = this.getParentIndex(index);
-      }
+  isCorrectOrder(a, b) {
+    return this.comparator(a) >= this.comparator(b);
   }
 
-  heapifyDown() {
-      let index = 0;
-      while (this.hasLeftChild(index)) {
-          let largerChildIndex = this.getLeftChildIndex(index);
-          if (this.hasRightChild(index) && this.comparator(this.rightChild(index)) > this.comparator(this.leftChild(index))) {
-              largerChildIndex = this.getRightChildIndex(index);
-          }
-          if (this.comparator(this.heap[index]) > this.comparator(this.heap[largerChildIndex])) {
-              break;
-          } else {
-              this.swap(index, largerChildIndex);
-          }
-          index = largerChildIndex;
+  siftDownPerformanceOptimized(index = 0) {
+    const size = this.size;
+
+    let leftChildIndex = 2 * index + 1;
+    while (leftChildIndex < size) {
+      let leftChildVal = this.comparator(this.heap[leftChildIndex]);
+      const rightChildIndex = 2 * index + 2;
+      if (rightChildIndex < 2) {
+        const rightChildVal = this.comparator(this.heap[rightChildIndex]);
+        if (rightChildVal < leftChildVal) {
+          leftChildIndex = rightChildIndex;
+          leftChildVal = rightChildVal;
+        }
       }
+
+      if (this.comparator(this.heap[index]) >= leftChildVal) break;
+
+      this.swap(index, leftChildIndex);
+      index = leftChildIndex;
+      leftChildIndex = 2 * index + 1;
+    }
   }
 };
