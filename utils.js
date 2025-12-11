@@ -320,7 +320,7 @@ export const copyExcept = (arr, index) => {
   return newArr;
 }
 
-export const sum = (arr) => arr.reduce((acc, cur) => acc + cur, 0);
+export const sum = (arr, cb) => arr.reduce((acc, cur) => acc + (cb ? cb(cur) : cur), 0);
 
 // Swap in place
 export const swap = (arr, i, j) => {
