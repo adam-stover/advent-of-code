@@ -65,7 +65,6 @@ export async function run() {
     }
   }
 
-  const you = nodes[YOU];
   const fft = nodes[FFT];
   const dac = nodes[DAC];
 
@@ -97,67 +96,6 @@ export async function run() {
   })();
 
   log(dacLeadsToFft);
-
-  const getNumPaths = (a, b) => {
-    let paths = [];
-    const queue = [[nodes[a], []]];
-    const seen = new Set();
-    while (queue.length) {
-      const [cur, path] = queue.shift();
-      const { name, outputs } = cur;
-      if (seen.has(name)) {
-        // log(`we are on ${path} to ${name} but we have already been here`);
-        continue;
-      }
-      if (name === b) {
-        paths.push(path.length);
-        continue;
-      }
-      seen.add(name);
-      queue.push(...outputs.map(o => [nodes[o], [...path, cur.name]]));
-    }
-    return paths;
-  }
-
-  const getAnswer = () => {
-    let paths = 0;
-    const queue = [[you, [you.name]]];
-    const seen = new Set();
-    while (queue.length) {
-      const [cur, path] = queue.shift();
-      const { name, outputs } = cur;
-      const key = `${path.join('')}${name}`;
-      if (seen.has(key)) continue;
-      if (name === OUT) {
-        if (path.includes(FFT) && path.includes(DAC)) paths++;
-        continue;
-      }
-      seen.add(key);
-      queue.push(...outputs.map(o => [nodes[o], [...path, name]]))
-    }
-    return paths
-  }
-
-  const cache = {};
-  const recurse = (node, history) => {
-    log(`I am ${node} coming from a long line of ${[...history]}`)
-    if (node === OUT) return (history.has(DAC) && history.has(FFT)) ? 1 : 0;
-    if (history.has(node)) return 0;
-    const key = `${node}|${[...history].join('')}`;
-    history.add(node);
-    if (!cache[key]) cache[key] = nodes[node].outputs.reduce((acc, cur) => acc + recurse(cur, new Set(history)), 0);
-    return cache[key];
-  }
-
-  const a = getNumPaths(YOU, FFT);
-  log(`${a.length} paths from you to fft and they are all ${a[0]} long`)
-  const b = getNumPaths(FFT, DAC);
-  log(`${b.length} paths from fft to dac and they are all ${b[0]} long`)
-  const c = getNumPaths(DAC, OUT);
-  log(`${c.length} paths from dac to out and they are all ${c[0]} long`)
-
-  const paths = a.length * b.length * c.length;
-  log(paths);
 
   const getPaths = (a, b) => {
     const table = [{[a]: 1}];

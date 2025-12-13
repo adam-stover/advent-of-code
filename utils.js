@@ -32,7 +32,9 @@ export function count(arr, el) {
   let res = 0;
 
   for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === el) res++;
+    if (typeof el === 'function') {
+      if (el(arr[i])) res++;
+    } else if (arr[i] === el) res++;
   }
 
   return res;
@@ -108,6 +110,8 @@ export function cloneMatrix(matrix) {
 }
 
 export function rotateMatrix(matrix) {
+  if (!matrix.length || !matrix[0].length) return matrix;
+
   const rotated = makeMatrix(
     matrix.length,
     matrix[0].length,
@@ -314,7 +318,7 @@ export const copyExcept = (arr, index) => {
   const newArr = [];
 
   for (let i = 0; i < arr.length; i++) {
-    if (i !== index) newArr.push(arr[i]);
+    if (Array.isArray(index) ? !index.includes(i) : i !== index) newArr.push(arr[i]);
   }
 
   return newArr;
