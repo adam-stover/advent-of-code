@@ -1,4 +1,4 @@
-import { getLines, ints, count, filterMap, has, max, min, copyExcept, rotateMatrix, sum, log, cloneMatrix } from '../utils.js';
+import { getLines, ints, count, has, min, rotateMatrix, log, cloneMatrix } from '../utils.js';
 
 let URL = './inputs/10.txt';
 // URL = './inputs/t.txt';
@@ -58,144 +58,6 @@ export async function run1() {
   const res = presses.reduce((acc, cur) => acc + cur);
   log(res);
 }
-
-// const stateKey = (state) => state.join('-');
-
-// const stateDiff = (target, state) => target.map((jolt, i) => jolt - state[i]);
-// const WIN = 0;
-// const LOW = 1;
-// const BUST = 2;
-// const INSUFFICIENT_PYLONS = 3;
-
-// const genius = (target, buttons) => {
-//   buttons.sort((a, b) => b.length - a.length);
-//   const hash = { [stateKey(target.map(_ => 0))]: 0 };
-//   // const hashPerButton = buttons.map(_ => ({ [stateKey(target.map(_ => 0))]: 0 }));
-//   for (let i = 0; i < buttons.length; i++) {
-//     const button = buttons[i];
-//     const state = target.map(_ => 0);
-//     let steps = 0;
-
-//     while (true) {
-//       for (let j = 0; j < button.length; j++) {
-//         const index = button[j];
-//         state[index]++;
-//       }
-//       steps++;
-//       const key = stateKey(state);
-//       if (has(hash, key) && hash[key] <= steps) {
-//         log('continuing');
-//         continue;
-//       }
-//       hash[key] = steps;
-//       // hashPerButton[i][key] = steps;
-//       const complement = stateDiff(target, state);
-//       const compKey = stateKey(complement);
-//       if (has(hash, compKey)) return steps + hash[compKey];
-//       if (complement.some(jolt => jolt < 0)) break;
-//     }
-//   }
-
-//   const indices = buttons.map(_ => 0);
-
-//   const check = (target, state) => {
-//     const diff = stateDiff(target, state);
-//     let win = true;
-//     for (let i = 0; i < diff.length; i++) {
-//       if (diff[i] < 0) return BUST;
-//       if (diff[i] > 0) win = false;
-//     }
-//     if (win) return WIN;
-//     const compKey = stateKey(diff);
-//     if (has(hash, compKey)) {
-//       return WIN;
-//     };
-//     const key = stateKey(state);
-//     if (!has(hash, key)) hash[key] = currentPushes;
-//     else {
-//       if (hash[key] > currentPushes) hash[key] = currentPushes;
-//     }
-
-//     return LOW;
-//   }
-
-//   const getSolvers = () => {
-//     const irrelevantJoltIndicesPerButton = new Array(buttons.length);
-//     const temp = new Set(target.map((_, i) => i));
-//     for (let buttonIndex = buttons.length - 1; buttonIndex >= 0; buttonIndex--) {
-//       for (const index of buttons[buttonIndex]) {
-//         temp.delete(index);
-//       }
-//       irrelevantJoltIndicesPerButton[buttonIndex] = [...temp];
-//     }
-
-//     const differences = [];
-
-//     for (let i = 0; i < buttons.length - 1; i++) {
-//       const aset = new Set(buttons[i]);
-//       const bset = new Set(buttons.slice(i + 1).flat())
-//       const diff = [...aset.difference(bset)];
-//       // log(`${buttons[i]} and its ${diff}`)
-//       differences.push(diff);
-//     }
-
-//     return (buttonIndex) => {
-//       if (irrelevantJoltIndicesPerButton[buttonIndex].some(i => state[i] !== target[i])) return false;
-//       const diffs = differences[buttonIndex];
-//       if (diffs.length) {
-//         const requiredPushes = target[diffs[0]] - state[diffs[0]];
-//         for (let i = 1; i < diffs.length; i++) {
-//           if (target[diffs[i]] - state[diffs[i]] !== requiredPushes) {
-//             // log(`We cannot proceed because we're the only ones who can change the ${diffs[0]} and the ${diffs[i]} jolts`)
-//             return false;
-//           }
-//         }
-//         return requiredPushes;
-//       }
-//       return true;
-//     }
-//   }
-//   const canSolve = getSolvers();
-
-//   const getSteps = (state) => {
-//     return currentPushes + hash[stateKey(stateDiff(target, state))];
-//   }
-
-
-//   let best = Infinity;
-
-//   // helpers starts at max then goes down
-//   // indices is just how many times we've pushed each button
-//   const state = target.map(_ => 0);
-//   let currentPushes = 0;
-//   const updateIndex = (buttonIndex, newIndex) => {
-//     const button = buttons[buttonIndex];
-//     const diff = newIndex - indices[buttonIndex];
-//     if (diff === 0) return;
-//     indices[buttonIndex] = newIndex;
-//     for (let i = 0; i < button.length; i++) {
-//       state[button[i]] += diff;
-//     }
-//     currentPushes += diff;
-//   }
-
-//   const getMins = (buttonIndex) => {
-//     const howMuchDependsOnUs = target.map(_ => 0);
-
-//     for (let i = buttonIndex + 1; i < buttons.length; i++) {
-//       const joltIndices = buttons[i];
-//       for (let j = 0; j < joltIndices.length; j++) {
-        
-//       }
-//     }
-
-//     return () => {
-//       const joltIndices = buttons[buttonIndex];
-//       const diffs = joltIndices.map(i => target[i] - state[i]);
-//     }
-//   }
-
-//   const buttonMappings = buttons.map((_, i) => i);
 
   // indices is just how many times we've pushed each button
   // OK we have two types of lists:
@@ -408,7 +270,7 @@ export async function run1() {
 
   // returns [possiblyCorrect, changed, numSteps, newMatrix]
   const substituteOnce = (matrix) => {
-    if (!matrix.length) return [matrix, 0, false];
+    if (!matrix.length) return [true, false];
     let i = 0;
     let equationIndex = -1;
     let coefficientIndex = -1;
@@ -455,10 +317,9 @@ export async function run1() {
   }
 
   const substitute = (matrix) => {
-    const initialClone = cloneMatrix(matrix);
-    let [viable, changed, value, cloned] = substituteOnce(initialClone);
+    let [viable, changed, value, cloned] = substituteOnce(matrix);
     if (!viable) return [false];
-    if (!changed) return [initialClone, 0];
+    if (!changed) return [matrix, 0];
     let steps = value;
     let lastCloned = cloned;
 
@@ -512,53 +373,34 @@ export async function run1() {
     matrix.forEach((v, i) => {
       v.push(targets[i]);
     });
-    let steps = 0;
 
     matrix = removeDupes(matrix);
-    [matrix, steps] = substitute(matrix);
-    if (!matrix) {
-      log(`We failed early because it's unviable`)
-      return;
-    }
-    matrix = removeDupes(matrix);
-    matrix = sortMatrix(matrix);
-    return [matrix, steps];
+    return matrix;
   }
 
   const TROUBLE = [];
 
   const wrapper = (targets, buttons, i) => {
     if (TROUBLE.length && !TROUBLE.includes(i)) return -1;
-    const [initialMatrix, initialSteps] = processInitialMatrix(targets, buttons);
-    if (TROUBLE.includes(i)) {
-      print(initialMatrix, `${i}: start: ${targets.length} eqs, ${buttons.length} vars; end: ${initialMatrix.length} eqs, ${initialMatrix[0].length - 1} vars`)
-    }
-    if (solved(initialMatrix)) return initialSteps;
-    const [solvedMatrix, subsequentSteps] = solve(initialMatrix);
-    if (solved(solvedMatrix)) {
-      return initialSteps + subsequentSteps;
-    }
-
+    const initialMatrix = processInitialMatrix(targets, buttons);
+    const [solvedMatrix, initialSteps] = solve(initialMatrix);
+    if (solved(solvedMatrix)) return initialSteps;
     const [recursedMatrix, recursedSteps] = search(solvedMatrix);
-    if (solved(recursedMatrix)) {
-      return initialSteps + subsequentSteps + recursedSteps;
-    }
+    if (solved(recursedMatrix)) return initialSteps + recursedSteps;
 
     print(solvedMatrix, `${i}: start: ${targets.length} eqs, ${buttons.length} vars; end: ${solvedMatrix.length} eqs, ${solvedMatrix[0].length - 1} vars`)
 
     return Infinity;
   }
 
-  const solve = (initialMatrix, substituteFirst = false) => {
+  const solve = (initialMatrix) => {
     let matrix = initialMatrix;
     let steps = 0;
-    if (substituteFirst) {
-      [matrix, steps] = substitute(initialMatrix);
-      if (!matrix) return [initialMatrix, Infinity];
-      if (solved(matrix)) return [matrix, steps];
-      matrix = removeDupes(matrix);
-      matrix = sortMatrix(matrix);
-    }
+    [matrix, steps] = substitute(initialMatrix);
+    if (!matrix) return [initialMatrix, Infinity];
+    if (solved(matrix)) return [matrix, steps];
+    matrix = removeDupes(matrix);
+    matrix = sortMatrix(matrix);
     let totalSteps = steps;
     do {
       matrix = eliminate(matrix);
@@ -586,7 +428,7 @@ export async function run1() {
 
     for (let i = 0; i < matrix.length; i++) {
       if (matrix[i][0] !== 0 && (matrix[i].every(val => val >= 0) || matrix[i].every(val => val <= 0))) {
-        const max = 1 + Math.floor(matrix[i][numVars] / matrix[i][0]);
+        const max = Math.floor(matrix[i][numVars] / matrix[i][0]);
         if (max >= 0 && max < maxGuess) maxGuess = max;
       }
     }
@@ -605,7 +447,7 @@ export async function run1() {
       newEquation.push(guess++);
       cloned.push(newEquation);
       // print(cloned, `guess ${guess}`)
-      const [oneStepMatrix, steps] = solve(cloned, true);
+      const [oneStepMatrix, steps] = solve(cloned);
       if (steps === Infinity) {
         // log(`guess ${guess} is unviable`);
         continue;
@@ -658,7 +500,7 @@ export async function run() {
   // const wrongAnswer = await getLines('temp.txt');
   // const answers = wrongAnswer.slice(0, -1).map(line => ints(line)[1]);
 
-  const presses = [];
+  let presses = 0;
 
   const t0 = performance.now();
   for (let i = 0; i < lines.length; i++) {
@@ -672,18 +514,18 @@ export async function run() {
       buttons.push(ints(pieces[i]));
     }
 
-    const t1 = performance.now();
+    // const t1 = performance.now();
     const solved = wrapper(targets, buttons, i);
-    const t2 = performance.now();
-    if (solved !== -1) {
-      if (solved !== Infinity) presses.push(solved);
-      log(`solved ${i}? ${solved !== Infinity ? `yes! in ${solved} steps` : 'no'} in ${((t2 - t1)/1000).toFixed(2)} seconds.`)
-    }
+    presses += solved;
+    // const t2 = performance.now();
+    // if (solved !== -1) {
+      // if (solved !== Infinity) presses.push(solved);
+      // log(`solved ${i}? ${solved !== Infinity ? `yes! in ${solved} steps` : 'no'} in ${((t2 - t1)/1000).toFixed(2)} seconds.`)
+    // }
   }
-  const t1 = performance.now();
 
-  const res = presses.reduce((acc, cur) => acc + cur, 0);
-  log(res);
+  const t1 = performance.now();
+  log(`solved ${lines.length} problems with ${presses} steps in ${((t1 - t0) / 1000).toFixed(2)} seconds`);
   // log(`${presses.length} solves in ${((t1 - t0)/1000).toFixed(2)} seconds`)
 
   // 21352 is too high
